@@ -1,0 +1,45 @@
+name: Bug report
+description: Something in the SDK is misbehaving.
+labels: ["bug"]
+body:
+  - type: input
+    id: sdk_version
+    attributes:
+      label: SDK version
+      description: The Maven coordinate version, e.g. 2.2.3
+      placeholder: "2.2.3"
+    validations:
+      required: true
+  - type: input
+    id: android_api
+    attributes:
+      label: Android API level
+      placeholder: "34"
+    validations:
+      required: true
+  - type: input
+    id: device
+    attributes:
+      label: Device / emulator
+      placeholder: "Pixel 8 / API 34 emulator"
+    validations:
+      required: true
+  - type: textarea
+    id: repro
+    attributes:
+      label: Steps to reproduce
+      description: Minimal repro. Code snippets help.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected vs. actual behavior
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant logs
+      description: Logcat output (filter on `Growl`), stack traces, etc.
+      render: shell
