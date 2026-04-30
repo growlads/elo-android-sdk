@@ -1,4 +1,4 @@
-# Growl Android SDK
+# Elo Android SDK
 
 > Maven coordinates: `com.withgrowl:growl-android-sdk:2.2.3` — see [Installation](#installation).
 
@@ -59,6 +59,14 @@ fun ChatScreen() {
 }
 ```
 
+## Screenshots
+
+| Default ad | With image |
+| :---: | :---: |
+| ![Default ad](docs/screenshots/default.png) | ![Ad with image](docs/screenshots/with-image.png) |
+
+> Drop screenshot PNGs into `docs/screenshots/` and they will render here. Replace this list with the actual ad formats you ship.
+
 ## Sample
 
 A runnable Compose sample lives in [`samples/quickstart/`](./samples/quickstart). Single Activity + Composable; reading `MainActivity.kt` and `ChatScreen.kt` is the integration. Build it with:
@@ -68,7 +76,7 @@ cd samples/quickstart
 ./gradlew :app:assembleDebug
 ```
 
-The sample ships with placeholder publisher / ad-unit IDs. To see a live ad, swap them for the IDs from your Growl dashboard, or contact us for sandbox IDs.
+The sample ships with placeholder publisher / ad-unit IDs. To see a live ad, swap them for the IDs from your Elo dashboard, or contact us for sandbox IDs.
 
 ## Ad rendering
 
@@ -92,7 +100,7 @@ See `GrowlAdStyle` for the full set of tunables.
 
 ## Docs
 
-Full documentation: [withgrowl.com/docs/android](https://withgrowl.com/docs/android)
+Full documentation: [elo.ad/docs/android](https://elo.ad/docs/android)
 
 ## Support
 
@@ -102,4 +110,4 @@ Full documentation: [withgrowl.com/docs/android](https://withgrowl.com/docs/andr
 
 ## License
 
-The sample app and documentation in this repository are MIT licensed (see [LICENSE](./LICENSE)). The Growl Android SDK binary distributed via Maven Central is governed by the commercial license declared in the artifact's POM.
+The sample app and documentation in this repository are MIT licensed (see [LICENSE](./LICENSE)). The Elo Android SDK binary distributed via Maven Central is governed by the commercial license declared in the artifact's POM.

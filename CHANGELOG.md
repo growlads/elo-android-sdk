@@ -10,4 +10,6 @@ Initial entry pinned to the version currently on Maven Central. Subsequent entri
 - `Growl.initialize(context, publisherId, adUnitId, …)` lifecycle entry.
 - `Growl.loadAd(messages: List<ChatMessage>): AdResult` (suspend).
 - `Growl.shutdown()` for teardown.
+
+> The `Growl*` symbol names reflect the published Maven artifact (`com.withgrowl:growl-android-sdk`); the consumer-facing product brand is **Elo** (elo.ad).
 - `AdResult` sealed type: `Loaded(GrowlAd)`, `NoFill`, `Error(String)`.
