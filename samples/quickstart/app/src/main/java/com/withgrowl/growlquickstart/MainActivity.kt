@@ -22,11 +22,15 @@ class MainActivity : ComponentActivity() {
         //
         // Publisher / ad-unit IDs come from BuildConfig — populated by the
         // sample's build.gradle.kts from samples/quickstart/local.properties
-        // when present. The committed defaults are placeholders, so the
-        // AdMob adapter is only registered when a real ad unit is provided
-        // (otherwise MobileAds.initialize would reject the placeholder).
+        // when present. The committed defaults are placeholders. Both the
+        // AdMob app ID (manifest meta-data) and the ad unit ID must be real
+        // before we register the adapter; otherwise MobileAds.initialize
+        // would later fail on the placeholder values.
+        val admobAppId    = BuildConfig.ADMOB_APP_ID
         val admobAdUnitId = BuildConfig.ADMOB_AD_UNIT_ID
-        val admobAdapters = if (admobAdUnitId.startsWith("ca-app-pub-")) {
+        val admobConfigured = admobAppId.startsWith("ca-app-pub-") &&
+            admobAdUnitId.startsWith("ca-app-pub-")
+        val admobAdapters = if (admobConfigured) {
             listOf(
                 AdMobNetworkAdapter(
                     priceTiers = listOf(

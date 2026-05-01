@@ -17,6 +17,12 @@ val sampleProps = Properties().apply {
 fun localOr(key: String, default: String): String =
     sampleProps.getProperty(key)?.takeIf { it.isNotBlank() } ?: default
 
+// Escape values bound for `buildConfigField "String", ..., "\"$x\""` so a
+// stray backslash, quote, or newline in local.properties doesn't generate
+// invalid BuildConfig source.
+fun escapeForBuildConfig(raw: String): String =
+    raw.replace("\\", "\\\\").replace("\"", "\\\"").replace("\n", "\\n").replace("\r", "\\r")
+
 val growlPublisherId = localOr("growl.publisherId", "YOUR_PUBLISHER_ID")
 val growlAdUnitId    = localOr("growl.adUnitId",    "YOUR_AD_UNIT_ID")
 val admobAppId       = localOr("admob.appId",       "YOUR_ADMOB_APP_ID")
@@ -33,9 +39,10 @@ android {
         versionCode = 1
         versionName = "1.0"
 
-        buildConfigField("String", "GROWL_PUBLISHER_ID", "\"$growlPublisherId\"")
-        buildConfigField("String", "GROWL_AD_UNIT_ID",   "\"$growlAdUnitId\"")
-        buildConfigField("String", "ADMOB_AD_UNIT_ID",   "\"$admobAdUnitId\"")
+        buildConfigField("String", "GROWL_PUBLISHER_ID", "\"${escapeForBuildConfig(growlPublisherId)}\"")
+        buildConfigField("String", "GROWL_AD_UNIT_ID",   "\"${escapeForBuildConfig(growlAdUnitId)}\"")
+        buildConfigField("String", "ADMOB_APP_ID",       "\"${escapeForBuildConfig(admobAppId)}\"")
+        buildConfigField("String", "ADMOB_AD_UNIT_ID",   "\"${escapeForBuildConfig(admobAdUnitId)}\"")
         manifestPlaceholders["admobAppId"] = admobAppId
     }
 
