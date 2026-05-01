@@ -1,6 +1,6 @@
 # Elo Android SDK
 
-> Maven coordinates: `com.withgrowl:growl-android-sdk:2.2.3` — see [Installation](#installation).
+> Maven coordinates: `ad.elo:elo-android-sdk:2.3.0` — see [Installation](#installation).
 
 Contextual ads for Android chat apps. Distributed via Maven Central.
 
@@ -16,7 +16,7 @@ Add to your app module's `build.gradle.kts`:
 
 ```kotlin
 dependencies {
-    implementation("com.withgrowl:growl-android-sdk:2.2.3")
+    implementation("ad.elo:elo-android-sdk:2.3.0")
 }
 ```
 
@@ -50,53 +50,47 @@ fun ChatScreen() {
         }) { Text("Load ad") }
 
         ad?.let { result ->
-            AndroidView(
-                factory = { ctx -> GrowlAdView(ctx).apply { show(result) } },
-                update = { it.show(result) },
-            )
+            GrowlAdView(result = result, modifier = Modifier.fillMaxWidth())
         }
     }
 }
 ```
 
-## Screenshots
+`GrowlAdView` lives in `com.withgrowl.growlandroidsdk.ui` and renders nothing on `AdResult.NoFill` / `AdResult.Error`, so it is safe to leave in the tree unconditionally.
 
-| Default ad | With image |
-| :---: | :---: |
-| ![Default ad](docs/screenshots/default.png) | ![Ad with image](docs/screenshots/with-image.png) |
+## Ad formats
 
-> Drop screenshot PNGs into `docs/screenshots/` and they will render here. Replace this list with the actual ad formats you ship.
+Three Compose ad views ship in `com.withgrowl.growlandroidsdk.ui`. Pass an `AdResult` to any of them.
+
+| Standard (`GrowlAdView`) | Badge (`GrowlBadgeAdView`) | Chat (`GrowlChatAdView`) |
+| :---: | :---: | :---: |
+| ![Standard ad](docs/screenshots/standard.png) | ![Badge ad](docs/screenshots/badge.png) | ![Chat ad](docs/screenshots/chat.png) |
+| Horizontal card with thumbnail, headline, and description. | Compact pill-style row that fits inline between messages. | Tall card with a prominent image — feels like a chat-feed post. |
+
+All three auto-fire render telemetry on first composition and impression telemetry once the view is ≥50% visible for one continuous second.
 
 ## Sample
 
-A runnable Compose sample lives in [`samples/quickstart/`](./samples/quickstart). Single Activity + Composable; reading `MainActivity.kt` and `ChatScreen.kt` is the integration. Build it with:
+A runnable Compose sample lives in [`samples/quickstart/`](./samples/quickstart). It pairs the SDK with a small canned-reply chat UI so you can see the contextual ad surface after each turn. Build it with:
 
 ```sh
 cd samples/quickstart
 ./gradlew :app:assembleDebug
 ```
 
-The sample ships with placeholder publisher / ad-unit IDs. To see a live ad, swap them for the IDs from your Elo dashboard, or contact us for sandbox IDs.
-
-## Ad rendering
-
-`GrowlAdView` is a `MaterialCardView` subclass (View system). Embed it in Compose via `AndroidView { ctx -> GrowlAdView(ctx).apply { show(result) } }`, or place it directly in an XML layout.
-
-A pure-Compose ad-view API is in development for an upcoming release.
+The sample ships with placeholder publisher / ad-unit IDs. To see live ads, swap them for the IDs from your Elo dashboard, or contact us for sandbox IDs.
 
 ## Styling
 
 ```kotlin
-GrowlAdView(context).apply {
-    setStyle(GrowlAdStyle(
-        cardBackgroundDp = 12f,
-        cornerRadiusDp = 16f,
-    ))
-    show(result)
-}
+GrowlAdView(
+    result = result,
+    style = GrowlAdStyle(
+        cornerRadius = 16.dp,
+        // see GrowlAdStyle for the full set of tunables (colors, padding, typography weights)
+    ),
+)
 ```
-
-See `GrowlAdStyle` for the full set of tunables.
 
 ## Docs
 
