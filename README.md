@@ -69,16 +69,82 @@ Three Compose ad views ship in `com.withgrowl.growlandroidsdk.ui`. Pass an `AdRe
 
 All three auto-fire render telemetry on first composition and impression telemetry once the view is ≥50% visible for one continuous second.
 
+## Mediation (optional)
+
+Elo runs a parallel first-price auction across its own demand and any mediation adapters you register. Adapters are extra dependencies — add only the networks you actually want bidding.
+
+The first-party AdMob adapter is published as a separate artifact:
+
+```kotlin
+dependencies {
+    implementation("ad.elo:elo-android-sdk:2.3.0")
+    implementation("ad.elo:elo-android-mediation-admob:0.0.1")
+}
+```
+
+AdMob's Play Services SDK requires its app ID in your manifest. Add it once:
+
+```xml
+<application>
+    <meta-data
+        android:name="com.google.android.gms.ads.APPLICATION_ID"
+        android:value="ca-app-pub-XXXXXXXXXXXXXXXX~YYYYYYYYYY" />
+</application>
+```
+
+Then switch from `Growl.initialize` to `Growl.configure` so you can pass an `adapters` list:
+
+```kotlin
+import com.withgrowl.growlads.mediation.admob.AdMobNetworkAdapter
+import com.withgrowl.growlads.mediation.admob.AdMobPriceTier
+
+Growl.configure(
+    context = this,
+    configuration = GrowlConfiguration(
+        growl = GrowlNetworkConfiguration(
+            publisherId = "YOUR_PUBLISHER_ID",
+            adUnitId = "YOUR_AD_UNIT_ID",
+        ),
+        adapters = listOf(
+            AdMobNetworkAdapter(
+                priceTiers = listOf(
+                    AdMobPriceTier(adUnitId = "ca-app-pub-…/…", eCpm = 1.50),
+                    AdMobPriceTier(adUnitId = "ca-app-pub-…/…", eCpm = 0.75),
+                ),
+                // Optional: override the attribution chip for non-English markets.
+                // sponsoredLabel = "Werbung",
+            ),
+        ),
+        auctionTimeoutMs = 3_000L,
+    ),
+)
+```
+
+Each `AdMobPriceTier` is a price floor + AdMob ad unit; the adapter waterfalls through them on each request and bids the first non-empty fill into Elo's auction. The ad unit you provide is yours — set it up in your AdMob dashboard with the floor you want.
+
+`AdView` rendering, click tracking, and impression telemetry are unchanged — adapter creatives surface through the same `GrowlAdView` / `GrowlBadgeAdView` / `GrowlChatAdView` components.
+
+For the full adapter list, source, and a guide to writing your own adapter, see [growlads/elo-android-mediation](https://github.com/growlads/elo-android-mediation).
+
 ## Sample
 
-A runnable Compose sample lives in [`samples/quickstart/`](./samples/quickstart). It pairs the SDK with a small canned-reply chat UI so you can see the contextual ad surface after each turn. Build it with:
+A runnable Compose sample lives in [`samples/quickstart/`](./samples/quickstart). It pairs the SDK with a small canned-reply chat UI so you can see the contextual ad surface after each turn. The sample wires the AdMob mediation adapter alongside Elo's own demand, so you can observe the parallel auction end-to-end. Build it with:
 
 ```sh
 cd samples/quickstart
 ./gradlew :app:assembleDebug
 ```
 
-The sample ships with placeholder publisher / ad-unit IDs. To see live ads, swap them for the IDs from your Elo dashboard, or contact us for sandbox IDs.
+The sample reads publisher / ad-unit IDs from a gitignored `local.properties` file at `samples/quickstart/local.properties` — drop in your own without committing them:
+
+```properties
+growl.publisherId=YOUR_PUBLISHER_ID
+growl.adUnitId=YOUR_AD_UNIT_ID
+admob.appId=ca-app-pub-XXXXXXXXXXXXXXXX~YYYYYYYYYY
+admob.adUnitId=ca-app-pub-XXXXXXXXXXXXXXXX/YYYYYYYYYY
+```
+
+Without `local.properties`, the sample builds with placeholder IDs (compile-only — Elo demand will no-fill, and the AdMob adapter is not registered until you provide a real `admob.adUnitId`).
 
 ## Styling
 

@@ -9,6 +9,17 @@
         android:label="@string/app_name"
         android:theme="@style/Theme.GrowlQuickstart">
 
+        <!--
+            Required by play-services-ads. The default is a placeholder so
+            this manifest builds on fresh clones; the AdMob adapter is only
+            registered at runtime when a real ad unit is configured. Set
+            `admob.appId` in samples/quickstart/local.properties to use
+            your own AdMob app ID without committing it.
+        -->
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="${admobAppId}" />
+
         <activity
             android:name=".MainActivity"
             android:exported="true">
