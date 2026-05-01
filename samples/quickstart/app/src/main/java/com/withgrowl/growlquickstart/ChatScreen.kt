@@ -18,12 +18,11 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.viewinterop.AndroidView
 import com.withgrowl.growlandroidsdk.AdResult
 import com.withgrowl.growlandroidsdk.ChatMessage
 import com.withgrowl.growlandroidsdk.Growl
-import com.withgrowl.growlandroidsdk.GrowlAdView
 import com.withgrowl.growlandroidsdk.MessageRole
+import com.withgrowl.growlandroidsdk.ui.GrowlAdView
 import kotlinx.coroutines.launch
 
 @Composable
@@ -52,11 +51,7 @@ fun ChatScreen() {
             Spacer(Modifier.height(8.dp))
 
             ad?.let { result ->
-                AndroidView(
-                    modifier = Modifier.fillMaxWidth(),
-                    factory = { ctx -> GrowlAdView(ctx).apply { show(result) } },
-                    update = { it.show(result) },
-                )
+                GrowlAdView(result = result, modifier = Modifier.fillMaxWidth())
             }
         }
     }

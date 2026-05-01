@@ -39,5 +39,5 @@ dependencies {
     implementation("com.google.android.material:material:1.12.0")
 
     // The SDK — the version is bumped by the update-dist-repo job after each Maven publish.
-    implementation("com.withgrowl:growl-android-sdk:2.2.3")
+    implementation("ad.elo:elo-android-sdk:2.3.0")
 }

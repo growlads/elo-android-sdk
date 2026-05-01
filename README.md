@@ -1,6 +1,6 @@
 # Elo Android SDK
 
-> Maven coordinates: `com.withgrowl:growl-android-sdk:2.2.3` — see [Installation](#installation).
+> Maven coordinates: `ad.elo:elo-android-sdk:2.3.0` — see [Installation](#installation).
 
 Contextual ads for Android chat apps. Distributed via Maven Central.
 
@@ -16,7 +16,7 @@ Add to your app module's `build.gradle.kts`:
 
 ```kotlin
 dependencies {
-    implementation("com.withgrowl:growl-android-sdk:2.2.3")
+    implementation("ad.elo:elo-android-sdk:2.3.0")
 }
 ```
 
