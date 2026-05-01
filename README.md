@@ -78,7 +78,7 @@ The first-party AdMob adapter is published as a separate artifact:
 ```kotlin
 dependencies {
     implementation("ad.elo:elo-android-sdk:2.3.0")
-    implementation("ad.elo:elo-android-mediation-admob:0.0.1")
+    implementation("ad.elo:elo-android-mediation-admob:0.0.2")
 }
 ```
 
