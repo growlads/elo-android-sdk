@@ -95,7 +95,7 @@ AdMob's Play Services SDK requires its app ID in your manifest. Add it once:
 Then switch from `Growl.initialize` to `Growl.configure` so you can pass an `adapters` list:
 
 ```kotlin
-import com.withgrowl.growlads.mediation.admob.AdMobNetworkAdapter
+import ad.elo.mediation.admob.AdMobNetworkAdapter
 
 Growl.configure(
     context = this,

@@ -4,7 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.material3.MaterialTheme
-import com.withgrowl.growlads.mediation.admob.AdMobNetworkAdapter
+import ad.elo.mediation.admob.AdMobNetworkAdapter
 import com.withgrowl.growlandroidsdk.Growl
 import com.withgrowl.growlandroidsdk.GrowlConfiguration
 import com.withgrowl.growlandroidsdk.GrowlNetworkConfiguration
