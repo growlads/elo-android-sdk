@@ -21,27 +21,8 @@ class MainActivity : ComponentActivity() {
         //
         // Publisher / ad-unit IDs come from BuildConfig — populated by the
         // sample's build.gradle.kts from samples/quickstart/local.properties
-        // when present. The committed defaults are placeholders. Both the
-        // AdMob app ID (manifest meta-data) and the ad unit ID must be real
-        // before we register the adapter; otherwise MobileAds.initialize
-        // would later fail on the placeholder values.
-        val admobAppId    = BuildConfig.ADMOB_APP_ID
-        val admobAdUnitId = BuildConfig.ADMOB_AD_UNIT_ID
-        val admobConfigured = admobAppId.startsWith("ca-app-pub-") &&
-            admobAdUnitId.startsWith("ca-app-pub-")
-        val admobAdapters = if (admobConfigured) {
-            listOf(
-                AdMobNetworkAdapter(
-                    adUnitId = admobAdUnitId,
-                    // Override the attribution chip if you ship in non-English
-                    // markets — defaults to "Sponsored" otherwise.
-                    // sponsoredLabel = "Werbung",
-                ),
-            )
-        } else {
-            emptyList()
-        }
-
+        // when present, otherwise from committed AdMob test defaults so the
+        // sample always demos the parallel auction end-to-end.
         Elo.configure(
             context = this,
             configuration = EloConfiguration(
@@ -49,7 +30,14 @@ class MainActivity : ComponentActivity() {
                     publisherId = BuildConfig.GROWL_PUBLISHER_ID,
                     adUnitId = BuildConfig.GROWL_AD_UNIT_ID,
                 ),
-                adapters = admobAdapters,
+                adapters = listOf(
+                    AdMobNetworkAdapter(
+                        adUnitId = BuildConfig.ADMOB_AD_UNIT_ID,
+                        // Override the attribution chip if you ship in non-English
+                        // markets — defaults to "Sponsored" otherwise.
+                        // sponsoredLabel = "Werbung",
+                    ),
+                ),
                 logLevel = LogLevel.Debug,
                 enableAuctionPriceLogging = true,
             ),

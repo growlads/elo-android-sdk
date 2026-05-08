@@ -139,7 +139,7 @@ admob.appId=ca-app-pub-XXXXXXXXXXXXXXXX~YYYYYYYYYY
 admob.adUnitId=ca-app-pub-XXXXXXXXXXXXXXXX/YYYYYYYYYY
 ```
 
-Without `local.properties`, the sample builds with placeholder IDs (compile-only — Elo demand will no-fill, and the AdMob adapter is not registered until you provide a real `admob.adUnitId`).
+Without `local.properties`, the sample falls back to Google's official [AdMob test IDs](https://developers.google.com/admob/android/test-ads) for `admob.appId` / `admob.adUnitId`, so the AdMob adapter is registered and you'll see test-ad creatives end-to-end. Elo's own demand still no-fills on placeholder publisher/ad-unit IDs — supply real ones via `local.properties` to see Elo's contextual ads.
 
 ## Styling
 

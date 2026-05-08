@@ -25,8 +25,11 @@ fun escapeForBuildConfig(raw: String): String =
 
 val growlPublisherId = localOr("elo.publisherId", "YOUR_PUBLISHER_ID")
 val growlAdUnitId    = localOr("elo.adUnitId",    "YOUR_AD_UNIT_ID")
-val admobAppId       = localOr("admob.appId",       "YOUR_ADMOB_APP_ID")
-val admobAdUnitId    = localOr("admob.adUnitId",    "YOUR_ADMOB_AD_UNIT_ID")
+// Defaults are Google's official AdMob test IDs (always-fill, safe to commit).
+// See https://developers.google.com/admob/android/test-ads — the native ad unit
+// is what the SDK requests. Override in local.properties for production.
+val admobAppId       = localOr("admob.appId",    "ca-app-pub-3940256099942544~3347511713")
+val admobAdUnitId    = localOr("admob.adUnitId", "ca-app-pub-3940256099942544/2247696110")
 
 android {
     namespace = "ad.elo.quickstart"
