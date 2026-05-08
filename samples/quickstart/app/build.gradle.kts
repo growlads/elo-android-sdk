@@ -71,7 +71,6 @@ dependencies {
     implementation("ad.elo:elo-android-sdk:2.3.0")
 
     // AdMob mediation adapter — first-party adapter that participates in
-    // Elo's parallel auction. See:
-    //   https://github.com/growlads/elo-android-mediation
-    implementation("ad.elo:elo-android-mediation-admob:0.0.1")
+    // Elo's parallel auction. Ships from the same SDK release pipeline.
+    implementation("ad.elo:elo-android-mediation-admob:0.0.3")
 }
