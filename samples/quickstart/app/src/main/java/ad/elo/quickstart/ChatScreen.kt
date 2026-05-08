@@ -1,4 +1,4 @@
-package com.withgrowl.growlquickstart
+package ad.elo.quickstart
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -46,11 +46,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
-import com.withgrowl.growlandroidsdk.AdResult
-import com.withgrowl.growlandroidsdk.ChatMessage
-import com.withgrowl.growlandroidsdk.Growl
-import com.withgrowl.growlandroidsdk.MessageRole
-import com.withgrowl.growlandroidsdk.ui.GrowlAdView
+import ad.elo.androidsdk.AdResult
+import ad.elo.androidsdk.ChatMessage
+import ad.elo.androidsdk.Elo
+import ad.elo.androidsdk.MessageRole
+import ad.elo.androidsdk.ui.EloAdView
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -86,7 +86,7 @@ fun ChatScreen() {
                 items(rows) { row ->
                     when (row) {
                         is ChatRow.Message -> MessageBubble(row.role, row.text)
-                        is ChatRow.Ad -> GrowlAdView(
+                        is ChatRow.Ad -> EloAdView(
                             result = row.result,
                             modifier = Modifier.fillMaxWidth(),
                         )
@@ -110,7 +110,7 @@ fun ChatScreen() {
 
                         val transcript = rows.filterIsInstance<ChatRow.Message>()
                             .map { ChatMessage(it.role, it.text) }
-                        rows += ChatRow.Ad(Growl.loadAd(transcript))
+                        rows += ChatRow.Ad(Elo.loadAd(transcript))
                         sending = false
                     }
                 },

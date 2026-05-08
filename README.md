@@ -1,6 +1,6 @@
 # Elo Android SDK
 
-> Maven coordinates: `ad.elo:elo-android-sdk:2.3.0` — see [Installation](#installation).
+> Maven coordinates: `ad.elo:elo-android-sdk:2.4.0` — see [Installation](#installation).
 
 Contextual ads for Android chat apps. Distributed via Maven Central.
 
@@ -16,7 +16,7 @@ Add to your app module's `build.gradle.kts`:
 
 ```kotlin
 dependencies {
-    implementation("ad.elo:elo-android-sdk:2.3.0")
+    implementation("ad.elo:elo-android-sdk:2.4.0")
 }
 ```
 
@@ -28,7 +28,7 @@ Maven Central is enabled by default. If your project uses a custom dependency-re
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Growl.initialize(
+        Elo.initialize(
             context = this,
             publisherId = "YOUR_PUBLISHER_ID",
             adUnitId = "YOUR_AD_UNIT_ID",
@@ -46,23 +46,23 @@ fun ChatScreen() {
     )
     Column {
         Button(onClick = {
-            scope.launch { ad = Growl.loadAd(messages) }
+            scope.launch { ad = Elo.loadAd(messages) }
         }) { Text("Load ad") }
 
         ad?.let { result ->
-            GrowlAdView(result = result, modifier = Modifier.fillMaxWidth())
+            EloAdView(result = result, modifier = Modifier.fillMaxWidth())
         }
     }
 }
 ```
 
-`GrowlAdView` lives in `com.withgrowl.growlandroidsdk.ui` and renders nothing on `AdResult.NoFill` / `AdResult.Error`, so it is safe to leave in the tree unconditionally.
+`EloAdView` lives in `ad.elo.androidsdk.ui` and renders nothing on `AdResult.NoFill` / `AdResult.Error`, so it is safe to leave in the tree unconditionally.
 
 ## Ad formats
 
-Three Compose ad views ship in `com.withgrowl.growlandroidsdk.ui`. Pass an `AdResult` to any of them.
+Three Compose ad views ship in `ad.elo.androidsdk.ui`. Pass an `AdResult` to any of them.
 
-| Standard (`GrowlAdView`) | Badge (`GrowlBadgeAdView`) | Chat (`GrowlChatAdView`) |
+| Standard (`EloAdView`) | Badge (`EloBadgeAdView`) | Chat (`EloChatAdView`) |
 | :---: | :---: | :---: |
 | ![Standard ad](docs/screenshots/standard.png) | ![Badge ad](docs/screenshots/badge.png) | ![Chat ad](docs/screenshots/chat.png) |
 | Horizontal card with thumbnail, headline, and description. | Compact pill-style row that fits inline between messages. | Tall card with a prominent image — feels like a chat-feed post. |
@@ -77,7 +77,7 @@ The first-party AdMob adapter is published as a separate artifact:
 
 ```kotlin
 dependencies {
-    implementation("ad.elo:elo-android-sdk:2.3.0")
+    implementation("ad.elo:elo-android-sdk:2.4.0")
     implementation("ad.elo:elo-android-mediation-admob:0.0.3")
 }
 ```
@@ -92,15 +92,15 @@ AdMob's Play Services SDK requires its app ID in your manifest. Add it once:
 </application>
 ```
 
-Then switch from `Growl.initialize` to `Growl.configure` so you can pass an `adapters` list:
+Then switch from `Elo.initialize` to `Elo.configure` so you can pass an `adapters` list:
 
 ```kotlin
 import ad.elo.mediation.admob.AdMobNetworkAdapter
 
-Growl.configure(
+Elo.configure(
     context = this,
-    configuration = GrowlConfiguration(
-        growl = GrowlNetworkConfiguration(
+    configuration = EloConfiguration(
+        elo = EloNetworkConfiguration(
             publisherId = "YOUR_PUBLISHER_ID",
             adUnitId = "YOUR_AD_UNIT_ID",
         ),
@@ -117,7 +117,7 @@ Growl.configure(
 
 The ad unit you provide is yours — configure floors and any AdMob-side mediation in your AdMob dashboard. The adapter loads that single unit on every bid.
 
-`AdView` rendering, click tracking, and impression telemetry are unchanged — adapter creatives surface through the same `GrowlAdView` / `GrowlBadgeAdView` / `GrowlChatAdView` components.
+`AdView` rendering, click tracking, and impression telemetry are unchanged — adapter creatives surface through the same `EloAdView` / `EloBadgeAdView` / `EloChatAdView` components.
 
 The AdMob adapter ships from the same SDK release pipeline. To request additional networks, [open an integration question](https://github.com/growlads/elo-android-sdk/issues/new?template=integration_question.yml).
 
@@ -133,8 +133,8 @@ cd samples/quickstart
 The sample reads publisher / ad-unit IDs from a gitignored `local.properties` file at `samples/quickstart/local.properties` — drop in your own without committing them:
 
 ```properties
-growl.publisherId=YOUR_PUBLISHER_ID
-growl.adUnitId=YOUR_AD_UNIT_ID
+elo.publisherId=YOUR_PUBLISHER_ID
+elo.adUnitId=YOUR_AD_UNIT_ID
 admob.appId=ca-app-pub-XXXXXXXXXXXXXXXX~YYYYYYYYYY
 admob.adUnitId=ca-app-pub-XXXXXXXXXXXXXXXX/YYYYYYYYYY
 ```
@@ -144,11 +144,11 @@ Without `local.properties`, the sample builds with placeholder IDs (compile-only
 ## Styling
 
 ```kotlin
-GrowlAdView(
+EloAdView(
     result = result,
-    style = GrowlAdStyle(
+    style = EloAdStyle(
         cornerRadius = 16.dp,
-        // see GrowlAdStyle for the full set of tunables (colors, padding, typography weights)
+        // see EloAdStyle for the full set of tunables (colors, padding, typography weights)
     ),
 )
 ```

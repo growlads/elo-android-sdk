@@ -1,20 +1,20 @@
-package com.withgrowl.growlquickstart
+package ad.elo.quickstart
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.material3.MaterialTheme
 import ad.elo.mediation.admob.AdMobNetworkAdapter
-import com.withgrowl.growlandroidsdk.Growl
-import com.withgrowl.growlandroidsdk.GrowlConfiguration
-import com.withgrowl.growlandroidsdk.GrowlNetworkConfiguration
-import com.withgrowl.growlandroidsdk.LogLevel
+import ad.elo.androidsdk.Elo
+import ad.elo.androidsdk.EloConfiguration
+import ad.elo.androidsdk.EloNetworkConfiguration
+import ad.elo.androidsdk.LogLevel
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // Use Growl.configure (instead of Growl.initialize) so we can wire
+        // Use Elo.configure (instead of Elo.initialize) so we can wire
         // mediation adapters alongside Elo's own demand. The AdMob adapter
         // participates in the parallel auction; Elo picks the highest-eCPM
         // bid for each ad request.
@@ -42,10 +42,10 @@ class MainActivity : ComponentActivity() {
             emptyList()
         }
 
-        Growl.configure(
+        Elo.configure(
             context = this,
-            configuration = GrowlConfiguration(
-                growl = GrowlNetworkConfiguration(
+            configuration = EloConfiguration(
+                elo = EloNetworkConfiguration(
                     publisherId = BuildConfig.GROWL_PUBLISHER_ID,
                     adUnitId = BuildConfig.GROWL_AD_UNIT_ID,
                 ),

@@ -12,10 +12,10 @@
 - fix(android): rekey AndroidView on ad swap, add AdRenderer.release for native cleanup
 - docs(android): clarify clickUrl semantics on renderer path in adapter guide
 - docs(android): document AdRenderer hook in adapter author guide
-- docs(android): note that badge/chat views skip AdRenderer; route adapter ads via GrowlAdView
-- feat(android): GrowlAdView delegates to GrowlRenderedAdView for adapter-rendered ads
-- feat(android): add GrowlRenderedAdView for adapter-owned native rendering
-- feat(android): add optional AdRenderer hook to GrowlAd
+- docs(android): note that badge/chat views skip AdRenderer; route adapter ads via EloAdView
+- feat(android): EloAdView delegates to EloRenderedAdView for adapter-rendered ads
+- feat(android): add EloRenderedAdView for adapter-owned native rendering
+- feat(android): add optional AdRenderer hook to EloAd
 - refactor(android): annotate AdRenderer with @MainThread; tighten test consistency
 - feat(android): add AdRenderer interface for adapter-owned native rendering
 - chore: gitignore .worktrees/ for isolated workspaces
@@ -37,11 +37,11 @@
 - Merge branch 'main' into feat/android-phase-3-compose-ad-views
 - Merge pull request #3 from growlads/feat/android-phase-2-mediation-framework
 - refactor(android): address Phase 2 PR review comments
-- feat(android): host Growl ad view via ComposeView in birajchatapp
-- refactor(android): drop legacy XML GrowlAdView and Glide plumbing
-- feat(android): add Compose GrowlBadgeAdView and GrowlChatAdView formats
-- feat(android): add Compose GrowlAdView with auto render/impression/click tracking
-- refactor(android): reshape GrowlAdStyle for Compose (Color/Dp)
+- feat(android): host Elo ad view via ComposeView in birajchatapp
+- refactor(android): drop legacy XML EloAdView and Glide plumbing
+- feat(android): add Compose EloBadgeAdView and EloChatAdView formats
+- feat(android): add Compose EloAdView with auto render/impression/click tracking
+- refactor(android): reshape EloAdStyle for Compose (Color/Dp)
 - feat(android): add Modifier.adImpressionTracking (>=50% for 1s)
 - test(android): hold strong listener ref in mediator-routing test
 - feat(android): add AdTrackingRegistry impression dedup singleton
@@ -49,20 +49,20 @@
 - refactor(android): apply Phase 2 review fixes
 - Add .idea to gitignore
 - feat(android): drive loadAd through ParallelAuctionMediator; validate adapters
-- feat(android): add first-party GrowlNetworkAdapter
+- feat(android): add first-party EloNetworkAdapter
 - feat(android): add ParallelAuctionMediator with adapter startup coordination
 - feat(android): redesign mediation debug snapshot + add MediationDebugRecorder
 - feat(android): replace AdNetworkAdapter marker with full contract
-- refactor(android): GrowlAd carries AdTracker; drop public render/impression URLs
+- refactor(android): EloAd carries AdTracker; drop public render/impression URLs
 
 ## 2.2.3 — 2026-04-08
 
 Initial entry pinned to the version currently on Maven Central. Subsequent entries are auto-prepended by the source-repo's `update-dist-repo` job after each Maven publish.
 
-- Public View-based ad rendering: `GrowlAdView` (`MaterialCardView`) with `show(result)`, `clear()`, `setStyle(style)`.
-- `Growl.initialize(context, publisherId, adUnitId, …)` lifecycle entry.
-- `Growl.loadAd(messages: List<ChatMessage>): AdResult` (suspend).
-- `Growl.shutdown()` for teardown.
+- Public View-based ad rendering: `EloAdView` (`MaterialCardView`) with `show(result)`, `clear()`, `setStyle(style)`.
+- `Elo.initialize(context, publisherId, adUnitId, …)` lifecycle entry.
+- `Elo.loadAd(messages: List<ChatMessage>): AdResult` (suspend).
+- `Elo.shutdown()` for teardown.
 
-> The `Growl*` symbol names reflect the published Maven artifact (`com.withgrowl:growl-android-sdk`); the consumer-facing product brand is **Elo** (elo.ad).
-- `AdResult` sealed type: `Loaded(GrowlAd)`, `NoFill`, `Error(String)`.
+> The `Elo*` symbol names reflect the published Maven artifact (`ad.elo:elo-android-sdk`); the consumer-facing product brand is **Elo** (elo.ad).
+- `AdResult` sealed type: `Loaded(EloAd)`, `NoFill`, `Error(String)`.

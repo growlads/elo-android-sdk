@@ -14,5 +14,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "growl-quickstart"
+rootProject.name = "elo-quickstart"
 include(":app")
