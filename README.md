@@ -96,7 +96,6 @@ Then switch from `Growl.initialize` to `Growl.configure` so you can pass an `ada
 
 ```kotlin
 import com.withgrowl.growlads.mediation.admob.AdMobNetworkAdapter
-import com.withgrowl.growlads.mediation.admob.AdMobPriceTier
 
 Growl.configure(
     context = this,

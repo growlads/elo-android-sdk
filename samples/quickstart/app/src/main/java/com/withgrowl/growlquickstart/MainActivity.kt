@@ -5,7 +5,6 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.material3.MaterialTheme
 import com.withgrowl.growlads.mediation.admob.AdMobNetworkAdapter
-import com.withgrowl.growlads.mediation.admob.AdMobPriceTier
 import com.withgrowl.growlandroidsdk.Growl
 import com.withgrowl.growlandroidsdk.GrowlConfiguration
 import com.withgrowl.growlandroidsdk.GrowlNetworkConfiguration
@@ -33,9 +32,7 @@ class MainActivity : ComponentActivity() {
         val admobAdapters = if (admobConfigured) {
             listOf(
                 AdMobNetworkAdapter(
-                    priceTiers = listOf(
-                        AdMobPriceTier(adUnitId = admobAdUnitId, eCpm = 1.00),
-                    ),
+                    adUnitId = admobAdUnitId,
                     // Override the attribution chip if you ship in non-English
                     // markets — defaults to "Sponsored" otherwise.
                     // sponsoredLabel = "Werbung",
@@ -53,7 +50,6 @@ class MainActivity : ComponentActivity() {
                     adUnitId = BuildConfig.GROWL_AD_UNIT_ID,
                 ),
                 adapters = admobAdapters,
-                auctionTimeoutMs = 3_000L,
                 logLevel = LogLevel.Debug,
                 enableAuctionPriceLogging = true,
             ),
