@@ -78,7 +78,7 @@ The first-party AdMob adapter is published as a separate artifact:
 ```kotlin
 dependencies {
     implementation("ad.elo:elo-android-sdk:2.3.0")
-    implementation("ad.elo:elo-android-mediation-admob:0.0.2")
+    implementation("ad.elo:elo-android-mediation-admob:0.0.3")
 }
 ```
 
@@ -107,20 +107,16 @@ Growl.configure(
         ),
         adapters = listOf(
             AdMobNetworkAdapter(
-                priceTiers = listOf(
-                    AdMobPriceTier(adUnitId = "ca-app-pub-…/…", eCpm = 1.50),
-                    AdMobPriceTier(adUnitId = "ca-app-pub-…/…", eCpm = 0.75),
-                ),
+                adUnitId = "ca-app-pub-…/…",
                 // Optional: override the attribution chip for non-English markets.
                 // sponsoredLabel = "Werbung",
             ),
         ),
-        auctionTimeoutMs = 3_000L,
     ),
 )
 ```
 
-Each `AdMobPriceTier` is a price floor + AdMob ad unit; the adapter waterfalls through them on each request and bids the first non-empty fill into Elo's auction. The ad unit you provide is yours — set it up in your AdMob dashboard with the floor you want.
+The ad unit you provide is yours — configure floors and any AdMob-side mediation in your AdMob dashboard. The adapter loads that single unit on every bid.
 
 `AdView` rendering, click tracking, and impression telemetry are unchanged — adapter creatives surface through the same `GrowlAdView` / `GrowlBadgeAdView` / `GrowlChatAdView` components.
 
