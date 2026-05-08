@@ -78,7 +78,7 @@ The first-party AdMob adapter is published as a separate artifact:
 ```kotlin
 dependencies {
     implementation("ad.elo:elo-android-sdk:2.3.0")
-    implementation("ad.elo:elo-android-mediation-admob:0.0.1")
+    implementation("ad.elo:elo-android-mediation-admob:0.0.2")
 }
 ```
 
@@ -124,7 +124,7 @@ Each `AdMobPriceTier` is a price floor + AdMob ad unit; the adapter waterfalls t
 
 `AdView` rendering, click tracking, and impression telemetry are unchanged — adapter creatives surface through the same `GrowlAdView` / `GrowlBadgeAdView` / `GrowlChatAdView` components.
 
-For the full adapter list, source, and a guide to writing your own adapter, see [growlads/elo-android-mediation](https://github.com/growlads/elo-android-mediation).
+The AdMob adapter ships from the same SDK release pipeline. To request additional networks, [open an integration question](https://github.com/growlads/elo-android-sdk/issues/new?template=integration_question.yml).
 
 ## Sample
 
