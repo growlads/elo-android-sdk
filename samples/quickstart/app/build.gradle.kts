@@ -23,17 +23,17 @@ fun localOr(key: String, default: String): String =
 fun escapeForBuildConfig(raw: String): String =
     raw.replace("\\", "\\\\").replace("\"", "\\\"").replace("\n", "\\n").replace("\r", "\\r")
 
-val growlPublisherId = localOr("growl.publisherId", "YOUR_PUBLISHER_ID")
-val growlAdUnitId    = localOr("growl.adUnitId",    "YOUR_AD_UNIT_ID")
+val growlPublisherId = localOr("elo.publisherId", "YOUR_PUBLISHER_ID")
+val growlAdUnitId    = localOr("elo.adUnitId",    "YOUR_AD_UNIT_ID")
 val admobAppId       = localOr("admob.appId",       "YOUR_ADMOB_APP_ID")
 val admobAdUnitId    = localOr("admob.adUnitId",    "YOUR_ADMOB_AD_UNIT_ID")
 
 android {
-    namespace = "com.withgrowl.growlquickstart"
+    namespace = "ad.elo.quickstart"
     compileSdk = 36
 
     defaultConfig {
-        applicationId = "com.withgrowl.growlquickstart"
+        applicationId = "ad.elo.quickstart"
         minSdk = 26
         targetSdk = 36
         versionCode = 1
@@ -68,9 +68,9 @@ dependencies {
     implementation("androidx.compose.material:material-icons-core")
 
     // The Elo SDK — the version is bumped by the update-dist-repo job after each Maven publish.
-    implementation("ad.elo:elo-android-sdk:2.3.0")
+    implementation("ad.elo:elo-android-sdk:2.4.0")
 
     // AdMob mediation adapter — first-party adapter that participates in
     // Elo's parallel auction. Ships from the same SDK release pipeline.
-    implementation("ad.elo:elo-android-mediation-admob:0.0.2")
+    implementation("ad.elo:elo-android-mediation-admob:0.0.3")
 }

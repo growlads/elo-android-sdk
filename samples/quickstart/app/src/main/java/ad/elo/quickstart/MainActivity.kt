@@ -1,21 +1,20 @@
-package com.withgrowl.growlquickstart
+package ad.elo.quickstart
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.material3.MaterialTheme
-import com.withgrowl.growlads.mediation.admob.AdMobNetworkAdapter
-import com.withgrowl.growlads.mediation.admob.AdMobPriceTier
-import com.withgrowl.growlandroidsdk.Growl
-import com.withgrowl.growlandroidsdk.GrowlConfiguration
-import com.withgrowl.growlandroidsdk.GrowlNetworkConfiguration
-import com.withgrowl.growlandroidsdk.LogLevel
+import ad.elo.mediation.admob.AdMobNetworkAdapter
+import ad.elo.androidsdk.Elo
+import ad.elo.androidsdk.EloConfiguration
+import ad.elo.androidsdk.EloNetworkConfiguration
+import ad.elo.androidsdk.LogLevel
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // Use Growl.configure (instead of Growl.initialize) so we can wire
+        // Use Elo.configure (instead of Elo.initialize) so we can wire
         // mediation adapters alongside Elo's own demand. The AdMob adapter
         // participates in the parallel auction; Elo picks the highest-eCPM
         // bid for each ad request.
@@ -33,9 +32,7 @@ class MainActivity : ComponentActivity() {
         val admobAdapters = if (admobConfigured) {
             listOf(
                 AdMobNetworkAdapter(
-                    priceTiers = listOf(
-                        AdMobPriceTier(adUnitId = admobAdUnitId, eCpm = 1.00),
-                    ),
+                    adUnitId = admobAdUnitId,
                     // Override the attribution chip if you ship in non-English
                     // markets — defaults to "Sponsored" otherwise.
                     // sponsoredLabel = "Werbung",
@@ -45,15 +42,14 @@ class MainActivity : ComponentActivity() {
             emptyList()
         }
 
-        Growl.configure(
+        Elo.configure(
             context = this,
-            configuration = GrowlConfiguration(
-                growl = GrowlNetworkConfiguration(
+            configuration = EloConfiguration(
+                elo = EloNetworkConfiguration(
                     publisherId = BuildConfig.GROWL_PUBLISHER_ID,
                     adUnitId = BuildConfig.GROWL_AD_UNIT_ID,
                 ),
                 adapters = admobAdapters,
-                auctionTimeoutMs = 3_000L,
                 logLevel = LogLevel.Debug,
                 enableAuctionPriceLogging = true,
             ),
