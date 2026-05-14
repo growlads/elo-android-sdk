@@ -4,7 +4,7 @@
 
 ## 2.5.1 — 2026-05-14
 
-- **Breaking(android):** `EloConfiguration` drops six fields with no sensible publisher-tuned value: `floorECpm`, `enableAuctionPriceLogging`, `maxMessagesContext`, `character`, `conversationId`, `variantId`, `impressionTrigger`. Drop these from existing `EloConfiguration(...)` / `copy(...)` call sites. The viewability contract is unchanged (50% / 1s); `maxMessagesContext` is now an internal constant (`EloAdsTuning.MAX_MESSAGES_CONTEXT = 30`).
+- **Breaking(android):** `EloConfiguration` drops seven fields with no sensible publisher-tuned value: `floorECpm`, `enableAuctionPriceLogging`, `maxMessagesContext`, `character`, `conversationId`, `variantId`, `impressionTrigger`. Drop these from existing `EloConfiguration(...)` / `copy(...)` call sites. The viewability contract is unchanged (50% / 1s); `maxMessagesContext` is now an internal constant (`EloAdsTuning.MAX_MESSAGES_CONTEXT = 30`).
 - **Breaking(android):** `Elo.impressionTrigger` getter removed.
 - **Breaking(android):** `EloAd.requiresCustomRendering` removed (dead public property).
 - **Breaking(android):** `EloAdStyle.ctaLabel` removed; CTA copy is now an `EloAdView` view-level parameter (`ctaLabel: String? = "Learn more"`). `EloAdView` also gains `sponsoredLabel: String = "Sponsored"` and `openLinkAccessibilityLabel: String = "Open sponsored link"` — both were previously hardcoded English strings inside the view. Localize per call: `EloAdView(ad, sponsoredLabel = stringResource(R.string.elo_sponsored))`.
