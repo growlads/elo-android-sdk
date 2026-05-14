@@ -184,7 +184,7 @@ EloAdView(
 
 ## Docs
 
-Full documentation: [elo.ad/docs/android](https://elo.ad/docs/android)
+Full documentation: [docs.elo.ad/android](https://docs.elo.ad/android)
 
 ## Support
 
