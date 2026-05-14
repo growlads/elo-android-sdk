@@ -2,6 +2,18 @@
 
 ## Unreleased
 
+## 2.5.0 — 2026-05-14
+
+- feat(android): expose winning `eCpm` and `networkId` on `AdResult.Loaded` — read the server-quoted CPM and the network that filled each slot.
+- feat(android): use server-quoted eCPM from `AdResponse` for the first-party Elo lane; drop publisher-side `expectedEcpm` from `EloNetworkConfiguration`.
+- feat(android): layered auction tiebreak — first-party Elo wins exact-eCPM ties; ties between non-Elo adapters fall back to registration order in `EloConfiguration.adapters`.
+- feat(android): publish first-party AdMob adapter `ad.elo:elo-android-mediation-admob:0.1.0` — requires `expectedEcpm` at construction time (finite, `>= 0.0`), immutable for the life of the instance.
+- fix(android): make `EloAd.release` and invalid bids safe across adapter shutdowns.
+- fix(android): tighten auction resource and preload handling.
+- chore(android): bump default auction timeout from 3s to 5s.
+- docs(android): document `Elo.mediationDebugSnapshot()` — adapter init state, per-adapter latest bid and latency, latest auction outcome and winning network.
+- docs(android): sweep README and quickstart sample for the server-driven eCPM model and the removal of the Badge / Chat ad views (`EloAdView` is now the single ad surface).
+
 ## 2.3.0 — 2026-05-01
 
 - Merge pull request #8 from growlads/chore/rename-maven-coords-to-ad-elo
