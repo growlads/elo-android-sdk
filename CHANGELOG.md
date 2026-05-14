@@ -2,6 +2,18 @@
 
 ## Unreleased
 
+## 2.5.1 — 2026-05-14
+
+- **Breaking(android):** `EloConfiguration` drops six fields with no sensible publisher-tuned value: `floorECpm`, `enableAuctionPriceLogging`, `maxMessagesContext`, `character`, `conversationId`, `variantId`, `impressionTrigger`. Drop these from existing `EloConfiguration(...)` / `copy(...)` call sites. The viewability contract is unchanged (50% / 1s); `maxMessagesContext` is now an internal constant (`EloAdsTuning.MAX_MESSAGES_CONTEXT = 30`).
+- **Breaking(android):** `Elo.impressionTrigger` getter removed.
+- **Breaking(android):** `EloAd.requiresCustomRendering` removed (dead public property).
+- **Breaking(android):** `EloAdStyle.ctaLabel` removed; CTA copy is now an `EloAdView` view-level parameter (`ctaLabel: String? = "Learn more"`). `EloAdView` also gains `sponsoredLabel: String = "Sponsored"` and `openLinkAccessibilityLabel: String = "Open sponsored link"` — both were previously hardcoded English strings inside the view. Localize per call: `EloAdView(ad, sponsoredLabel = stringResource(R.string.elo_sponsored))`.
+- **Breaking(android):** `NoFillReason.BelowFloor` removed. Without a floor knob the variant was incoherent; auctions that filter to zero usable bids now fall through to `NoBids`.
+- **Adapter authors(android):** `AdBidRequest.character` / `.conversationId` / `.variantId` removed (and dropped from the wire `AdRequest`). Adapters that ignored these per `ADAPTER_AUTHOR_GUIDE.md` see no behavior change.
+- **Internal(android):** `ParallelAuctionMediator` no longer takes a `floorECpm` parameter; `selectWinner` filters with `eCpm.isFinite() && eCpm >= 0.0`. `MediationDebugEvent.Configured` and `EloAuctionDebugSnapshot` drop their `floorECpm` field.
+- chore(android): bump AdMob adapter dep to `ad.elo:elo-android-mediation-admob:0.1.1` (tracking bump — adapter source unchanged, `expectedEcpm` semantics unchanged).
+- docs(android): sweep README and quickstart sample for the floorECpm removal and the new `EloAdView` view-level CTA / sponsored / accessibility-label parameters.
+
 ## 2.5.0 — 2026-05-14
 
 - feat(android): expose winning `eCpm` and `networkId` on `AdResult.Loaded` — read the server-quoted CPM and the network that filled each slot.

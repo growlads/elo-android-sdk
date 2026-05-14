@@ -1,6 +1,6 @@
 # Elo Android SDK
 
-> Maven coordinates: `ad.elo:elo-android-sdk:2.5.0` — see [Installation](#installation).
+> Maven coordinates: `ad.elo:elo-android-sdk:2.5.1` — see [Installation](#installation).
 
 Contextual ads for Android chat apps. Distributed via Maven Central.
 
@@ -20,7 +20,7 @@ Add to your app module's `build.gradle.kts`:
 
 ```kotlin
 dependencies {
-    implementation("ad.elo:elo-android-sdk:2.5.0")
+    implementation("ad.elo:elo-android-sdk:2.5.1")
 }
 ```
 
@@ -89,14 +89,14 @@ binding.adView.setContent {
 
 ## Mediation (optional)
 
-Elo runs a parallel first-price auction across its own demand and any mediation adapters you register. Each adapter quotes an eCPM; the highest bid at or above your configured floor wins. On exact ties, the first-party Elo lane wins (the publisher keeps 100% of the revenue on a first-party fill); ties between two non-Elo adapters fall back to registration order in `EloConfiguration.adapters`. The default auction timeout is 5s. Adapters are extra dependencies — add only the networks you actually want bidding.
+Elo runs a parallel first-price auction across its own demand and any mediation adapters you register. Each adapter quotes an eCPM; the highest finite, non-negative bid wins. On exact ties, the first-party Elo lane wins (the publisher keeps 100% of the revenue on a first-party fill); ties between two non-Elo adapters fall back to registration order in `EloConfiguration.adapters`. The default auction timeout is 5s. Adapters are extra dependencies — add only the networks you actually want bidding.
 
 The first-party AdMob adapter is published as a separate artifact:
 
 ```kotlin
 dependencies {
-    implementation("ad.elo:elo-android-sdk:2.5.0")
-    implementation("ad.elo:elo-android-mediation-admob:0.1.0")
+    implementation("ad.elo:elo-android-sdk:2.5.1")
+    implementation("ad.elo:elo-android-mediation-admob:0.1.1")
 }
 ```
 
@@ -144,7 +144,7 @@ Elo.configure(
 
 The ad unit you provide is yours — configure floors and any AdMob-side mediation in your AdMob dashboard. The adapter loads that single unit on every bid.
 
-AdMob's Mobile Ads SDK does not surface a programmatic bid price for native ads, so you tell the adapter what to bid via `expectedEcpm`. `expectedEcpm = 0.0` is permitted but is effectively last-resort backfill — Elo wins `0.0`-vs-`0.0` ties, and any positive floor filters AdMob out along with every below-floor bid.
+AdMob's Mobile Ads SDK does not surface a programmatic bid price for native ads, so you tell the adapter what to bid via `expectedEcpm`. `expectedEcpm = 0.0` is permitted but is effectively last-resort backfill — Elo wins `0.0`-vs-`0.0` ties, so a zero AdMob bid only wins when Elo no-fills and no other adapter outbids `0.0`.
 
 `EloAdView` rendering, click tracking, and impression telemetry are unchanged — adapter creatives surface through the same component. For AdMob and other renderer-backed fills, click tracking is handled by the network's own SDK and `EloAdListener.onAdDidReceiveClick` will not fire (observe clicks via the network's own dashboard).
 
@@ -181,6 +181,19 @@ EloAdView(
         cornerRadius = 16.dp,
         // see EloAdStyle for the full set of tunables (colors, padding, typography weights)
     ),
+)
+```
+
+## Localization
+
+`EloAdView` exposes the three user-visible strings as view-level parameters so you can localize per call without subclassing:
+
+```kotlin
+EloAdView(
+    result = result,
+    ctaLabel = stringResource(R.string.elo_cta),                          // default: "Learn more" (pass null to hide)
+    sponsoredLabel = stringResource(R.string.elo_sponsored),              // default: "Sponsored"
+    openLinkAccessibilityLabel = stringResource(R.string.elo_open_link),  // default: "Open sponsored link"
 )
 ```
 
