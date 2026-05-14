@@ -4,6 +4,8 @@
 
 Contextual ads for Android chat apps. Distributed via Maven Central.
 
+Full documentation: [docs.elo.ad/android/getting-started](https://docs.elo.ad/android/getting-started/)
+
 ## Requirements
 
 - Android API 26+ (`minSdk = 26`)
@@ -181,10 +183,6 @@ EloAdView(
     ),
 )
 ```
-
-## Docs
-
-Full documentation: [docs.elo.ad/android](https://docs.elo.ad/android)
 
 ## Support
 
