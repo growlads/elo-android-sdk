@@ -12,7 +12,7 @@
 - fix(android): tighten auction resource and preload handling.
 - chore(android): bump default auction timeout from 3s to 5s.
 - docs(android): document `Elo.mediationDebugSnapshot()` — adapter init state, per-adapter latest bid and latency, latest auction outcome and winning network.
-- docs(android): add `ADAPTER_AUTHOR_GUIDE.md` mediation auction reference and sweep README/CHANGELOG/spec docs for the server-driven eCPM model.
+- docs(android): sweep README and quickstart sample for the server-driven eCPM model and the removal of the Badge / Chat ad views (`EloAdView` is now the single ad surface).
 
 ## 2.3.0 — 2026-05-01
 
