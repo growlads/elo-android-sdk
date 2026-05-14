@@ -33,6 +33,13 @@ class MainActivity : ComponentActivity() {
                 adapters = listOf(
                     AdMobNetworkAdapter(
                         adUnitId = BuildConfig.ADMOB_AD_UNIT_ID,
+                        // Required: AdMob's Mobile Ads SDK does not surface a
+                        // programmatic bid price, so the adapter bids this
+                        // value. Set it to your realized eCPM for this ad
+                        // unit from AdMob's dashboard (a blended last-30-day
+                        // figure is a reasonable starting point). 0.0 makes
+                        // AdMob last-resort backfill — Elo wins 0.0 ties.
+                        expectedEcpm = 0.0,
                         // Override the attribution chip if you ship in non-English
                         // markets — defaults to "Sponsored" otherwise.
                         // sponsoredLabel = "Werbung",
