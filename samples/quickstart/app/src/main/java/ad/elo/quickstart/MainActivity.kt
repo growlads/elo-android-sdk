@@ -46,7 +46,6 @@ class MainActivity : ComponentActivity() {
                     ),
                 ),
                 logLevel = LogLevel.Debug,
-                enableAuctionPriceLogging = true,
             ),
         )
 
