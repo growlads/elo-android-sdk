@@ -109,8 +109,21 @@ You'll need two distinct values from the [AdMob console](https://apps.admob.com)
   2. On the **Apps** list, copy the value in the **App ID** column.
 - **Ad unit ID** — `ca-app-pub-XXXXXXXXXXXXXXXX/YYYYYYYYYY` (note the **`/`**). Passed to `AdMobNetworkAdapter(adUnitId = …)`.
   1. In the AdMob console, open the app you just created → **Ad units** → **Add ad unit**.
-  2. Pick the **Native** format — the Elo AdMob adapter only renders native ad units.
-  3. Name the unit and create it, then copy the **Ad unit ID** shown on the confirmation screen.
+  2. Pick the `Native advanced` format — the Elo AdMob adapter only renders native ad units, and "Native advanced" is AdMob's name for the SDK-renderable native unit.
+  3. On the **Configure ad unit settings** screen, fill the form with the values below — the adapter is built around them, so copy verbatim unless noted:
+
+     | Field | Value |
+     | --- | --- |
+     | Ad unit name | `elo-mediation` (or any label you want in reports) |
+     | Ad format | `Native advanced` (already selected) |
+     | Partner bidding | unchecked — see note below |
+     | Advanced → Media type | `Image` |
+     | Advanced → eCPM floor | `Manual floor`, set to the same number you pass as `AdMobNetworkAdapter(expectedEcpm = …)` below |
+
+     - **Partner bidding:** ticking it routes AdMob through a *different* mediation platform's RTB pipe and *permanently* disables AdMob mediation / Google Ads / AdX demand for this unit — the setting is locked after creation.
+     - **Media type = `Image`:** the adapter renders image creatives only, not video.
+     - **Manual floor:** AdMob will skip fills below this floor, which keeps AdMob's bid honest against Elo's server-quoted price in the parallel auction.
+  4. Click **Create ad unit**, then copy the **Ad unit ID** shown on the confirmation screen.
 
 New AdMob apps and ad units may take a few hours before they begin serving live impressions. While you wait, you can substitute Google's [official AdMob test IDs](https://developers.google.com/admob/android/test-ads) — they always fill with a test creative and are safe to commit.
 
