@@ -100,7 +100,21 @@ dependencies {
 }
 ```
 
-AdMob's Play Services SDK requires its app ID in your manifest. Add it once:
+### Getting your AdMob App ID and Ad Unit ID
+
+You'll need two distinct values from the [AdMob console](https://apps.admob.com), which look similar but are not interchangeable:
+
+- **App ID** — `ca-app-pub-XXXXXXXXXXXXXXXX~YYYYYYYYYY` (note the **`~`**). Goes in the Android manifest.
+  1. Sign in at [apps.admob.com](https://apps.admob.com) → **Apps** → **Add app**, choose **Android**, and follow the prompts. (If your app isn't on Google Play yet, choose "No" when asked and you can link it later.)
+  2. On the **Apps** list, copy the value in the **App ID** column.
+- **Ad unit ID** — `ca-app-pub-XXXXXXXXXXXXXXXX/YYYYYYYYYY` (note the **`/`**). Passed to `AdMobNetworkAdapter(adUnitId = …)`.
+  1. In the AdMob console, open the app you just created → **Ad units** → **Add ad unit**.
+  2. Pick the **Native** format — the Elo AdMob adapter only renders native ad units.
+  3. Name the unit and create it, then copy the **Ad unit ID** shown on the confirmation screen.
+
+New AdMob apps and ad units may take a few hours before they begin serving live impressions. While you wait, you can substitute Google's [official AdMob test IDs](https://developers.google.com/admob/android/test-ads) — they always fill with a test creative and are safe to commit.
+
+AdMob's Play Services SDK requires the App ID in your manifest. Add it once:
 
 ```xml
 <application>

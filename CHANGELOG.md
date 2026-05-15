@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- docs(android): add AdMob console walkthrough for obtaining the App ID (`ca-app-pub-…~…`) and ad unit ID (`ca-app-pub-…/…`), highlighting the `~` vs. `/` distinction and pointing at Google's test IDs for local development.
+
 ## 2.5.1 — 2026-05-14
 
 - **Breaking(android):** `EloConfiguration` drops seven fields with no sensible publisher-tuned value: `floorECpm`, `enableAuctionPriceLogging`, `maxMessagesContext`, `character`, `conversationId`, `variantId`, `impressionTrigger`. Drop these from existing `EloConfiguration(...)` / `copy(...)` call sites. The viewability contract is unchanged (50% / 1s); `maxMessagesContext` is now an internal constant (`EloAdsTuning.MAX_MESSAGES_CONTEXT = 30`).
