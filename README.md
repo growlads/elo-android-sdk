@@ -96,7 +96,7 @@ The first-party AdMob adapter is published as a separate artifact:
 ```kotlin
 dependencies {
     implementation("ad.elo:elo-android-sdk:2.5.2")
-    implementation("ad.elo:elo-android-mediation-admob:0.1.1")
+    implementation("ad.elo:elo-android-mediation-admob:0.1.2")
 }
 ```
 
@@ -161,8 +161,6 @@ Elo.configure(
                 // the life of the adapter instance — construct a new adapter
                 // and re-run `Elo.configure` to change it.
                 expectedEcpm = 2.40,
-                // Optional: override the attribution chip for non-English markets.
-                // sponsoredLabel = "Werbung",
             ),
         ),
     ),
