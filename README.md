@@ -1,6 +1,6 @@
 # Elo Android SDK
 
-> Maven coordinates: `ad.elo:elo-android-sdk:2.5.1` — see [Installation](#installation).
+> Maven coordinates: `ad.elo:elo-android-sdk:2.5.2` — see [Installation](#installation).
 
 Contextual ads for Android chat apps. Distributed via Maven Central.
 
@@ -20,7 +20,7 @@ Add to your app module's `build.gradle.kts`:
 
 ```kotlin
 dependencies {
-    implementation("ad.elo:elo-android-sdk:2.5.1")
+    implementation("ad.elo:elo-android-sdk:2.5.2")
 }
 ```
 
@@ -95,7 +95,7 @@ The first-party AdMob adapter is published as a separate artifact:
 
 ```kotlin
 dependencies {
-    implementation("ad.elo:elo-android-sdk:2.5.1")
+    implementation("ad.elo:elo-android-sdk:2.5.2")
     implementation("ad.elo:elo-android-mediation-admob:0.1.1")
 }
 ```
