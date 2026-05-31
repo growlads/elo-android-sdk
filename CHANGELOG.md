@@ -2,7 +2,12 @@
 
 ## Unreleased
 
-- docs(android): add AdMob console walkthrough for obtaining the App ID (`ca-app-pub-…~…`) and ad unit ID (`ca-app-pub-…/…`), highlighting the `~` vs. `/` distinction and pointing at Google's test IDs for local development.
+## 2.5.2 — 2026-05-31
+
+- Adds `EloAdLoadingView` and an `EloAdView(messages = ...)` overload with an optional built-in loading placeholder.
+- Makes AdMob-rendered fills inherit view-level labels and style tokens from `EloAdView`, so localization and card styling stay consistent across Elo and AdMob winners.
+- Fixes AdMob native-ad ownership across Compose remounts so filled ads keep their content when tabs or screens are re-created.
+- Updates examples to `ad.elo:elo-android-sdk:2.5.2` and `ad.elo:elo-android-mediation-admob:0.1.2`.
 
 ## 2.5.1 — 2026-05-14
 

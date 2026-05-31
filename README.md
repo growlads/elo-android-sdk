@@ -1,6 +1,6 @@
 # Elo Android SDK
 
-> Maven coordinates: `ad.elo:elo-android-sdk:2.5.1` — see [Installation](#installation).
+> Maven coordinates: `ad.elo:elo-android-sdk:2.5.2` — see [Installation](#installation).
 
 Contextual ads for Android chat apps. Distributed via Maven Central.
 
@@ -20,7 +20,7 @@ Add to your app module's `build.gradle.kts`:
 
 ```kotlin
 dependencies {
-    implementation("ad.elo:elo-android-sdk:2.5.1")
+    implementation("ad.elo:elo-android-sdk:2.5.2")
 }
 ```
 
@@ -64,6 +64,35 @@ fun ChatScreen() {
 
 `AdResult.Loaded` also exposes `eCpm` (USD-equivalent CPM of the winning bid) and `networkId` (`"elo"` or the id of a mediation adapter). For Elo wins, `eCpm` is the price the backend quoted on the bid response; for adapter wins, it's whatever the adapter reported. Use these to run a client-side auction against another SDK, or to attribute which network filled the slot. If you decide *not* to render the ad you received (e.g. an outer auction picks a different source), call `EloAd.release()` to release adapter-owned resources before rendering the other ad — ads you pass to `EloAdView` (or `Elo.trackRender`) are managed by the SDK and must not be released manually.
 
+## Loading State
+
+For the common path, let the view load and render the ad:
+
+```kotlin
+EloAdView(messages = messages)
+```
+
+This overload shows the built-in `EloAdLoadingView` while `Elo.loadAd(...)` is in flight, renders the ad on fill, and collapses on no-fill or error. Hide the loading placeholder when the host layout should reserve no ad space until a fill arrives:
+
+```kotlin
+EloAdView(
+    messages = messages,
+    showLoadingPlaceholder = false,
+)
+```
+
+If you own the coroutine and result state yourself, render `EloAdLoadingView` during the load and swap to `EloAdView(result = ...)` afterward:
+
+```kotlin
+if (isLoading) {
+    EloAdLoadingView()
+} else {
+    EloAdView(result = result)
+}
+```
+
+`EloAdLoadingView` is a non-clickable skeleton. It does not fire render, impression, or click tracking. If the loaded ad omits its CTA pill with `ctaLabel = null`, pass `showCtaPlaceholder = false` so the loading slot matches the final layout.
+
 ## Ad formats
 
 `EloAdView` (in `ad.elo.androidsdk.ui`) is the single ad surface the SDK ships. It renders Elo-direct fills as a horizontally-laid-out card and delegates adapter-rendered fills (e.g. AdMob native) to the adapter's own renderer.
@@ -95,8 +124,8 @@ The first-party AdMob adapter is published as a separate artifact:
 
 ```kotlin
 dependencies {
-    implementation("ad.elo:elo-android-sdk:2.5.1")
-    implementation("ad.elo:elo-android-mediation-admob:0.1.1")
+    implementation("ad.elo:elo-android-sdk:2.5.2")
+    implementation("ad.elo:elo-android-mediation-admob:0.1.2")
 }
 ```
 
@@ -161,8 +190,6 @@ Elo.configure(
                 // the life of the adapter instance — construct a new adapter
                 // and re-run `Elo.configure` to change it.
                 expectedEcpm = 2.40,
-                // Optional: override the attribution chip for non-English markets.
-                // sponsoredLabel = "Werbung",
             ),
         ),
     ),
@@ -210,6 +237,8 @@ EloAdView(
     ),
 )
 ```
+
+Pass the same style to `EloAdLoadingView(style = style)` when you want the loading skeleton to reserve a matching slot before the ad loads.
 
 ## Localization
 
