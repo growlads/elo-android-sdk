@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+## 2.6.0 — 2026-06-28
+
+- Collects OpenRTB `device` signals (make, model, hardware, OS version, screen size/density, language, and connection type) and includes them in ad requests for better fill and relevance. The advertising identifier (`ifa`) is consent-gated and honors limit-ad-tracking, with an `ifv` fallback.
+- Adds opt-in passive geo sharing via `shareGeoLocation` / `geoLocationPrecision` on `EloConfiguration`. It only reads an already-authorized last-known location and never prompts; coordinates are rounded to the configured precision.
+- Updates examples to `ad.elo:elo-android-sdk:2.6.0`.
+
 ## 2.5.2 — 2026-05-31
 
 - Adds `EloAdLoadingView` and an `EloAdView(messages = ...)` overload with an optional built-in loading placeholder.
