@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+## 2.6.0 — 2026-06-28
+
+- Merge pull request #24 from growlads/feat/device-info-signals
+- test(android): assert on quoted JSON keys in device omit-empty checks
+- feat(android): collect OpenRTB device signals and passive geo
+
 ## 2.5.2 — 2026-05-31
 
 - Adds `EloAdLoadingView` and an `EloAdView(messages = ...)` overload with an optional built-in loading placeholder.
