@@ -2,6 +2,133 @@
 
 ## Unreleased
 
+## 0.1.8 — 2026-07-22
+
+First release on the new `ad.elo:elo-ads-android` coordinate — the version
+line is reset to match the iOS SDK (0.1.6/0.1.7 were prepared but never
+published), and the pre-rename `ad.elo:elo-android-sdk` 2.x line is frozen.
+Everything below lands relative to 2.6.0:
+
+- **New diagnostics surface for iOS parity:** public
+  `Elo.diagnosticsSnapshot()` (mirrors iOS `Elo.Debug.snapshot()`) exposing
+  integration status, `Elo.sdkVersion`, adapter count, the last 10
+  load/preload operations with per-operation latency/outcome and a redacted
+  copy of the Elo request payload (message content and context descriptions
+  dropped; counts, roles, types, identity, consent, and `device` incl.
+  `device.geo` retained), plus the last 20 render/impression/click tracking
+  outcomes. In-memory only; cleared on reconfigure/shutdown. The request
+  payload is captured only when the host app opts in via
+  `Elo.setRequestPayloadCaptureEnabled(true)` (off by default), since it
+  carries the advertising id, geolocation, and consent strings. Each ad
+  operation also carries the server ad-opportunity id (ad response
+  `request_id`) as `EloDiagnosticsEntry.serverRequestId` — recorded on fill
+  and no-fill alike, since the server assigns it for every request it
+  processes — so a request can be correlated to its server-side
+  impression/click events (mirrors iOS `DiagnosticsEntry.serverRequestId`).
+- **Impression/click diagnostics now carry the correlating opportunity id.**
+  Each `EloTrackingDiagnosticsEntry` records the served creative's server
+  ad-opportunity id (ad response `request_id`) as
+  `EloTrackingDiagnosticsEntry.serverRequestId`. Because impression/click
+  tracking URLs are keyed under this id server-side, reading it off the
+  confirmed-impression entry correlates the exact request to its funnel row —
+  instead of guessing which `loadAd` operation produced the displayed creative
+  (transcript-driven reloads create several). Mirrors iOS
+  `TrackingDiagnosticsEntry.serverRequestId`. No public ad-loading API changes.
+- **Unified ad card design (iOS parity).** The default `CompactHorizontal`
+  card now matches the inline banner's visual language and the iOS card: a
+  56dp icon beside a "Title · Sponsored" attribution line and body, on the
+  plain surface background with a hairline border, a trailing disclosure
+  chevron, and a 14dp corner radius. The separate uppercase "Sponsored"
+  label above the row is gone. `EloAdLoadingView`'s skeleton mirrors the new
+  single-row layout. No public API changes.
+
+- **Privacy: visitor IDs are always anonymous.** The SDK generates a local
+  `anon_<UUID>` and never derives the visitor ID from the Google Advertising
+  ID anymore. `PRIVACY.md` is updated to match.
+- **Privacy: removed the `Device-Name` and `System-Version` HTTP headers**
+  (iOS never sent them and the backend never parsed them). The `User-Agent`
+  is now built from `DeviceInfo` with the real SDK version instead of
+  `System.getProperty("http.agent")` with a stale hardcoded fallback.
+- **Renamed for iOS parity (old names deprecated, not removed):**
+  `EloAd.release()` → `EloAd.releaseResources()`, and `EloAdView`'s
+  `ctaLabel` parameter → `callToActionLabel` (forwarded to renderers as
+  `AdRenderOptions.callToActionLabel`).
+- New public `EloAdLayout` enum and CTA color style tokens
+  (`EloAdStyle.callToActionBackground` / `callToActionForeground`), matching
+  the iOS styling surface; renderer-backed fills receive the resolved colors
+  via `AdRenderOptions`.
+- Ad requests and same-origin tracking pings now carry the `X-Elo-State`
+  session envelope header (base64 JSON: visitor, session, publisher, ad
+  unit, timestamp), matching the iOS and web SDKs. It is never attached to
+  URLs off the configured API origin.
+- The mediation auction now runs one shared deadline spanning adapter
+  `start()` + `bid()` (previously a fresh budget per phase), and the default
+  auction timeout dropped from 5s to 3s — both matching iOS.
+- Render pings are deduped process-wide via the tracking registry, so
+  lazy-list re-entry can no longer re-fire `trackRender` for the same ad.
+- Fixed a native-resource leak: `EloAdView(messages)` and
+  `EloKeyboardBannerAd` now release the owned ad when they leave
+  composition, and an in-flight load that outlives disposal is released
+  instead of resurrecting a disposed result (previously adapter-backed
+  ads such as AdMob `NativeAd` leaked on navigation).
+- Preloaded ads now expire after 300 seconds, matching iOS.
+- The default API base URL is production in all build types — debug builds
+  no longer point at the dev endpoint (the sample app opts into dev
+  explicitly). Request retries follow the iOS retry policy and failures
+  surface as typed `EloError`s.
+- `AdCreative` decoding is lenient: `source`, `offer_type`, and `format`
+  are optional and unknown enum values no longer fail the whole response.
+- Elo-direct click POST delivery is temporarily disabled. Tapping still opens
+  the creative destination and dispatches the local click callback; third-party
+  `click_trackers` remain server-owned.
+- **New Maven coordinate:** the SDK is now published as
+  `ad.elo:elo-ads-android`, with the version line reset to match the iOS SDK
+  — 0.1.8 is this coordinate's first release (0.1.6 and 0.1.7 were prepared
+  but never published, so Android lands in lockstep with iOS 0.1.8). The
+  pre-announcement 2.x line (≤ 2.6.0) shipped as `ad.elo:elo-android-sdk`;
+  that coordinate is frozen and will receive no further releases.
+- **Behavior change for upgraders:** Prebid-style passive geo sharing is now
+  **on by default** (`EloConfiguration.shareGeoLocation = true`), matching iOS
+  0.1.6. Apps whose users already granted a location permission start
+  attaching a rounded, coarse location to ad requests after upgrading. The SDK
+  still never requests location permission itself. Opt out with
+  `shareGeoLocation = false` or `Elo.setShareGeoLocation(false)` (the runtime
+  toggle resets to the configured value after `shutdown()` + reconfigure).
+- Coordinates are now never sent for `coppa`/`tfua` configurations, regardless
+  of `shareGeoLocation` — same gating pattern as advertising identifiers.
+- Ad requests now carry a settings-derived country (`device.geo.country`,
+  ISO-3166 alpha-3 from the region setting) and UTC offset
+  (`device.geo.utcoffset`, minutes) — permission-free, from locale/time-zone
+  settings, not GPS. Sent unconditionally; the `shareGeoLocation` opt-out
+  covers coordinates only.
+- New keyboard banner format: `EloKeyboardBannerAd(messages)` pins a two-line
+  inline banner strip above the software keyboard with one composable —
+  loads with `AdDisplayPosition.Banner`, collapses on no-fill or error, and
+  reloads when the messages change. Mirrors iOS 0.1.6's
+  `.eloKeyboardBannerAd`. Requires an edge-to-edge window with
+  `adjustResize` to pin (degrades to resting at the window bottom otherwise);
+  see the composable's documentation for host-side caveats.
+- Elo-rendered creatives no longer draw a CTA pill — the whole card has been
+  the click target all along, and the pill was decorative. `EloAdView`'s
+  `ctaLabel` parameter now only reaches renderer-backed fills, forwarded via
+  `AdRenderOptions.ctaLabel` for `ConfigurableAdRenderer` implementations.
+  `EloAdLoadingView(showCtaPlaceholder:)` is ignored (kept for source
+  compatibility) and the skeleton no longer shows a CTA placeholder.
+- New `PRIVACY.md` host-app privacy guide (what leaves the device, Data
+  safety form guidance, the `AD_ID` manifest-merge note, children/Families
+  policy), linked from a new README Privacy section.
+- **`Elo.initialize` is deprecated** and will be removed in a future major
+  version. `Elo.configure` is now the single entry point, in two forms:
+  - `Elo.configure(context, publisherId, adUnitId, shareGeoLocation,
+    geoLocationPrecision)` — new convenience for Elo-only integrations; the
+    geo controls keep the on-by-default sharing opt-out visible at the
+    simplest entry point.
+  - `Elo.configure(context, configuration)` — unchanged; mediation adapters,
+    COPPA/TFUA, `logLevel`, and `baseUrl` live on `EloConfiguration`.
+  Migrating from `initialize` is a rename for most apps; if you passed
+  `coppa`/`tfua`, move them onto `EloConfiguration`.
+  `EloError.NotConfigured`'s message now points at `Elo.configure()`.
+
 ## 2.6.0 — 2026-06-28
 
 - Collects OpenRTB `device` signals (make, model, hardware, OS version, screen size/density, language, and connection type) and includes them in ad requests for better fill and relevance. The advertising identifier (`ifa`) is consent-gated and honors limit-ad-tracking, with an `ifv` fallback.
