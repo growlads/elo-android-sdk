@@ -71,7 +71,7 @@ dependencies {
     implementation("androidx.compose.material:material-icons-core")
 
     // The Elo SDK — the version is bumped by the update-dist-repo job after each Maven publish.
-    implementation("ad.elo:elo-android-sdk:2.6.0")
+    implementation("ad.elo:elo-ads-android:0.1.8")
 
     // AdMob mediation adapter — first-party adapter that participates in
     // Elo's parallel auction. Ships from the same SDK release pipeline.
