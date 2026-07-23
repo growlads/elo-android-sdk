@@ -95,9 +95,12 @@ if (isLoading) {
 
 ## Ad formats
 
-`EloAdView` (in `ad.elo.androidsdk.ui`) is the single ad surface the SDK ships. It renders Elo-direct fills as a horizontally-laid-out card and delegates adapter-rendered fills (e.g. AdMob native) to the adapter's own renderer.
+`EloAdView` (in `ad.elo.androidsdk.ui`) renders a fill in one of two `EloAdLayout`s — `CompactHorizontal` (the default card) or `InlineBanner` (a two-line strip) — and delegates adapter-rendered fills (e.g. AdMob native) to the adapter's own renderer. `EloKeyboardBannerAd` is a companion composable that pins an inline banner above the software keyboard while the composer is focused.
 
-![Standard ad](docs/screenshots/standard.png)
+| Inline banner | Keyboard banner |
+| --- | --- |
+| `EloAdView(messages = …, layout = EloAdLayout.InlineBanner)` renders in the message feed. | `EloKeyboardBannerAd(messages = …)` pins above the keyboard while the composer is focused. |
+| <img src="docs/screenshots/inline-banner.png" alt="Inline banner ad rendered in the chat feed" width="280"> | <img src="docs/screenshots/keyboard-banner.png" alt="Keyboard banner ad pinned above the composer" width="280"> |
 
 Render telemetry fires on first composition; impression telemetry fires once the view is ≥50% visible for one continuous second. Click tracking is automatic for Elo-direct fills and handled by the network's own SDK for adapter-rendered fills.
 
