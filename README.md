@@ -62,7 +62,7 @@ fun ChatScreen() {
 
 `EloAdView` lives in `ad.elo.androidsdk.ui` and renders nothing on `AdResult.NoFill` / `AdResult.Error`, so it is safe to leave in the tree unconditionally.
 
-`AdResult.Loaded` also exposes `eCpm` (USD-equivalent CPM of the winning bid) and `networkId` (`"elo"` or the id of a mediation adapter). For Elo wins, `eCpm` is the price the backend quoted on the bid response; for adapter wins, it's whatever the adapter reported. Use these to run a client-side auction against another SDK, or to attribute which network filled the slot. If you decide *not* to render the ad you received (e.g. an outer auction picks a different source), call `EloAd.release()` to release adapter-owned resources before rendering the other ad — ads you pass to `EloAdView` (or `Elo.trackRender`) are managed by the SDK and must not be released manually.
+`AdResult.Loaded` also exposes `eCpm` (USD-equivalent CPM of the winning bid) and `networkId` (`"elo"` or the id of a mediation adapter). For Elo wins, `eCpm` is the price the backend quoted on the bid response; for adapter wins, it's whatever the adapter reported. Use these to run a client-side auction against another SDK, or to attribute which network filled the slot. If you decide *not* to render the ad you received (e.g. an outer auction picks a different source), call `EloAd.releaseResources()` to release adapter-owned resources before rendering the other ad — ads you pass to `EloAdView` (or `Elo.trackRender`) are managed by the SDK and must not be released manually.
 
 ## Loading State
 
@@ -91,7 +91,7 @@ if (isLoading) {
 }
 ```
 
-`EloAdLoadingView` is a non-clickable skeleton. It does not fire render, impression, or click tracking. If the loaded ad omits its CTA pill with `ctaLabel = null`, pass `showCtaPlaceholder = false` so the loading slot matches the final layout.
+`EloAdLoadingView` is a non-clickable skeleton. It does not fire render, impression, or click tracking, and its layout mirrors the final single-row card.
 
 ## Ad formats
 
@@ -121,14 +121,14 @@ binding.adView.setContent {
 
 ## Mediation (optional)
 
-Elo runs a parallel first-price auction across its own demand and any mediation adapters you register. Each adapter quotes an eCPM; the highest finite, non-negative bid wins. On exact ties, the first-party Elo lane wins (the publisher keeps 100% of the revenue on a first-party fill); ties between two non-Elo adapters fall back to registration order in `EloConfiguration.adapters`. The default auction timeout is 5s. Adapters are extra dependencies — add only the networks you actually want bidding.
+Elo runs a parallel first-price auction across its own demand and any mediation adapters you register. Each adapter quotes an eCPM; the highest finite, non-negative bid wins. On exact ties, the first-party Elo lane wins (the publisher keeps 100% of the revenue on a first-party fill); ties between two non-Elo adapters fall back to registration order in `EloConfiguration.adapters`. The default auction timeout is 3s. Adapters are extra dependencies — add only the networks you actually want bidding.
 
 The first-party AdMob adapter is published as a separate artifact:
 
 ```kotlin
 dependencies {
     implementation("ad.elo:elo-ads-android:0.1.8")
-    implementation("ad.elo:elo-android-mediation-admob:0.1.2")
+    implementation("ad.elo:elo-android-mediation-admob:0.1.3")
 }
 ```
 
@@ -211,7 +211,7 @@ The AdMob adapter ships from the same SDK release pipeline. To request additiona
 
 ## Sample
 
-A runnable Compose sample lives in [`samples/quickstart/`](./samples/quickstart). It pairs the SDK with a small canned-reply chat UI so you can see the contextual ad surface after each turn. The sample wires the AdMob mediation adapter alongside Elo's own demand, so you can observe the parallel auction end-to-end. Build it with:
+A runnable Compose sample lives in [`samples/quickstart/`](./samples/quickstart). It's a small chat app: a list of chats that each open into a conversation demonstrating one of the SDK's two banner formats — the inline banner (`EloAdView` in the feed) and the keyboard banner (`EloKeyboardBannerAd`). It uses Elo's own demand only; to demo mediation, register an adapter as shown in [Mediation](#mediation-optional). Build it with:
 
 ```sh
 cd samples/quickstart
@@ -223,11 +223,9 @@ The sample reads publisher / ad-unit IDs from a gitignored `local.properties` fi
 ```properties
 elo.publisherId=YOUR_PUBLISHER_ID
 elo.adUnitId=YOUR_AD_UNIT_ID
-admob.appId=ca-app-pub-XXXXXXXXXXXXXXXX~YYYYYYYYYY
-admob.adUnitId=ca-app-pub-XXXXXXXXXXXXXXXX/YYYYYYYYYY
 ```
 
-Without `local.properties`, the sample falls back to Google's official [AdMob test IDs](https://developers.google.com/admob/android/test-ads) for `admob.appId` / `admob.adUnitId`, so the AdMob adapter is registered and you'll see test-ad creatives end-to-end. Elo's own demand still no-fills on placeholder publisher/ad-unit IDs — supply real ones via `local.properties` to see Elo's contextual ads.
+Without `local.properties`, the sample falls back to placeholder publisher / ad-unit IDs, so Elo no-fills and the banners collapse — supply real IDs from your Elo dashboard to see contextual ads.
 
 ## Styling
 
@@ -250,7 +248,7 @@ Pass the same style to `EloAdLoadingView(style = style)` when you want the loadi
 ```kotlin
 EloAdView(
     result = result,
-    ctaLabel = stringResource(R.string.elo_cta),                          // default: "Learn more" (pass null to hide)
+    callToActionLabel = stringResource(R.string.elo_cta),                 // default: "Learn more" (pass null to hide)
     sponsoredLabel = stringResource(R.string.elo_sponsored),              // default: "Sponsored"
     openLinkAccessibilityLabel = stringResource(R.string.elo_open_link),  // default: "Open sponsored link"
 )
