@@ -25,11 +25,6 @@ fun escapeForBuildConfig(raw: String): String =
 
 val growlPublisherId = localOr("elo.publisherId", "YOUR_PUBLISHER_ID")
 val growlAdUnitId    = localOr("elo.adUnitId",    "YOUR_AD_UNIT_ID")
-// Defaults are Google's official AdMob test IDs (always-fill, safe to commit).
-// See https://developers.google.com/admob/android/test-ads — the native ad unit
-// is what the SDK requests. Override in local.properties for production.
-val admobAppId       = localOr("admob.appId",    "ca-app-pub-3940256099942544~3347511713")
-val admobAdUnitId    = localOr("admob.adUnitId", "ca-app-pub-3940256099942544/2247696110")
 
 android {
     namespace = "ad.elo.quickstart"
@@ -44,9 +39,6 @@ android {
 
         buildConfigField("String", "GROWL_PUBLISHER_ID", "\"${escapeForBuildConfig(growlPublisherId)}\"")
         buildConfigField("String", "GROWL_AD_UNIT_ID",   "\"${escapeForBuildConfig(growlAdUnitId)}\"")
-        buildConfigField("String", "ADMOB_APP_ID",       "\"${escapeForBuildConfig(admobAppId)}\"")
-        buildConfigField("String", "ADMOB_AD_UNIT_ID",   "\"${escapeForBuildConfig(admobAdUnitId)}\"")
-        manifestPlaceholders["admobAppId"] = admobAppId
     }
 
     compileOptions {
@@ -72,8 +64,4 @@ dependencies {
 
     // The Elo SDK — the version is bumped by the update-dist-repo job after each Maven publish.
     implementation("ad.elo:elo-ads-android:0.1.8")
-
-    // AdMob mediation adapter — first-party adapter that participates in
-    // Elo's parallel auction. Ships from the same SDK release pipeline.
-    implementation("ad.elo:elo-android-mediation-admob:0.1.2")
 }
