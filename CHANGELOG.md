@@ -2,6 +2,46 @@
 
 ## Unreleased
 
+## 0.1.9 — 2026-07-29
+
+- **An ad image that fails to load now hides the thumbnail instead of leaving
+  a blank square.** The compact card and the inline banner used to keep an
+  empty tile in the row when Coil couldn't fetch the creative's image; the tile
+  and the 12dp gap after it now drop out and the text takes the space.
+  Creatives that carry no image URL at all still get the monogram tile.
+
+- **The ad disclosure now leads the attribution line: `Ad • Headline`.** It
+  used to trail the headline (`Headline · Sponsored`), where a long headline
+  pushed it into the ellipsis and it disappeared. Leading it makes truncation
+  structurally unable to reach it. The separator is now a `•` (U+2022) rather
+  than a `·` (U+00B7), and `sponsoredLabel`'s default changed from
+  `"Sponsored"` to `"Ad"` — shorter, so it costs the headline less width. The
+  parameter name is unchanged, so no call site breaks; keep passing a localized
+  string for non-English surfaces. TalkBack now announces the disclosure first.
+
+- **Creative descriptions are now a single line and scroll when they don't
+  fit.** Copy wider than the surface moves right-to-left at 30dp/s until the end
+  of the line is visible, holds there for 1.2s, then restarts from the beginning
+  after another 1.2s pause — so the whole line is readable and two fragments of
+  it are never on screen together. The full text stays in semantics, so TalkBack
+  reads all of it. Motion stops while the ad is off screen and falls back to a
+  static ellipsis when the device has animations disabled. Opt out with the new
+  `EloAdStyle.descriptionOverflow = EloAdDescriptionOverflow.Truncate`.
+
+  Note for layouts that reserve space: the compact card's description used to
+  wrap to two lines, so its text column is shorter now — though the 56dp icon
+  still sets the row's floor, so the card only loses a few dp at default font
+  scale.
+
+  Note for instrumentation tests: the marquee is an indefinite animation, so
+  `waitForIdle()` won't settle while an overflowing ad is on screen. Use
+  `descriptionOverflow = Truncate`, or set `animator_duration_scale 0`.
+
+- **AdMob-rendered fills need the matching adapter release** for the reorder.
+  An older adapter on this SDK renders `Headline · Ad` — internally consistent,
+  but not the new order.
+
+
 ## 0.1.8 — 2026-07-22
 
 First release on the new `ad.elo:elo-ads-android` coordinate — the version
