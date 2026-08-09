@@ -2,6 +2,75 @@
 
 ## Unreleased
 
+## 0.2.0 — 2026-08-09
+
+- **New: `Elo.setUserIdentifier` ties ad requests to your own user account.**
+  Every request carries an anonymous, per-install `visitor_id` the SDK
+  generates. Apps with a sign-in can now supply their own identifier instead,
+  and it replaces that anonymous id on subsequent ad requests and their
+  tracking pings — so delivery, frequency capping, and reporting follow the
+  user across installs and devices rather than the install. Call it once the
+  user is known and clear it on sign-out; the order relative to `Elo.configure`
+  does not matter. The anonymous id is kept underneath, so clearing restores
+  the same one the install had before. An ad keeps whichever identity it was
+  requested under for its whole lifetime, so an impression that fires after a
+  sign-out is still reported against the request that fetched it. The
+  identifier lives in memory only (re-set it on each launch) and is cleared by
+  `shutdown()`; a re-configure does not clear it, since a config refresh is not
+  a sign-out. Whitespace is trimmed, a blank string clears it, and values over
+  256 characters are ignored with a warning.
+
+- **Fix: a scrolling ad description now scrolls a few times and then settles,
+  instead of scrolling for as long as the ad is on screen.** A permanently
+  animating line keeps the host app's UI from ever going idle, which stalls
+  automation frameworks that wait for idle before each interaction and keeps a
+  frame in flight for no reason. The description now makes three passes — the
+  same budget as iOS — then stays tail-ellipsized like any other line. Scroll
+  speed, the holds at each end, travel distance and row height are unchanged,
+  and a new creative gets its own passes.
+
+- **Fix: the loading placeholder's shimmer now sweeps a few times and then
+  rests, and stays still for anyone who has turned animations off.** It
+  previously repeated for as long as the placeholder was on screen, with the
+  same never-goes-idle consequence, and a request that hangs holds the
+  placeholder there indefinitely. It now shimmers well past the point a normal
+  ad request returns, then rests as a plain skeleton.
+
+- **Fix: creatives whose image is a `.ico` now show their thumbnail.**
+  Publishers commonly supply a site favicon as a creative image, and favicons
+  are often ICO — a format Android cannot decode, unlike iOS. The image load
+  failed and the ad rendered with no thumbnail at all, so the same creative
+  looked different on the two platforms. The SDK's image loader now decodes
+  ICO itself (both the PNG-embedded and the uncompressed-DIB forms, picking
+  the largest image in the file), closing the parity gap.
+
+- **A creative image that fails to load now logs a warning.** The thumbnail
+  drops out silently by design, which made an unreachable or undecodable image
+  host indistinguishable from a creative that simply has no image. The failing
+  URL and cause are now logged at warn level under the `Elo` tag.
+
+- **Fix: a creative that wins more than once now records a render and an
+  impression every time it's shown.** Render and impression dedup was keyed on
+  the creative id, which is stable across ad requests — so the second and every
+  later time the same creative won an auction in a single app session, the SDK
+  suppressed both pings while the ad still displayed and still clicked.
+  Those ad opportunities reached the server as a click with no render and no
+  impression behind it. Dedup is now keyed on the ad opportunity, so repeated
+  showings of one creative each report their own render and impression, while
+  the guarantee that matters is unchanged: recomposition, scrolling an ad out
+  of a lazy list and back, or a configuration change still reports exactly one
+  render and one impression per opportunity.
+
+  **Expect reported renders and impressions to rise** once this ships — the
+  missing events were never counted. Click volume is unaffected. Publishers
+  whose reporting showed clicks exceeding impressions for a placement should
+  see that resolve.
+
+  One consequence worth knowing: `Elo.shutdown()` now clears render dedup state
+  as well as impression state, so an ad shown before shutdown can report again
+  after a re-`configure`.
+
+
 ## 0.1.9 — 2026-07-29
 
 - **An ad image that fails to load now hides the thumbnail instead of leaving
