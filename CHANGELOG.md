@@ -2,6 +2,82 @@
 
 ## Unreleased
 
+## 0.3.0 — 2026-08-14
+
+- **Fix: calling `Elo.trackRender` or `Elo.trackImpression` yourself no longer
+  double-counts.** Ads shown through `EloAdView` have always recorded exactly
+  one render and one impression per ad opportunity, however often the
+  composable recomposes or re-enters the viewport — but that limit lived in the
+  view layer, so a fully custom layout calling the tracking hooks directly
+  could report the same opportunity more than once. It now sits behind the
+  public API and covers every path into it, so those hooks are safe to call on
+  every recomposition. A repeat load that returns the same creative is a
+  distinct opportunity and still records. A suppressed duplicate is silent: no
+  ping, and no `EloAdListener.onAdDidTrackImpression` callback. Matches the iOS
+  change of the same behavior.
+- **Internal: render tracking moved into the impression-tracking modifier.**
+  `EloAdView` and the adapter-rendered path each fired their own render ping
+  next to the impression modifier they already applied; both now come from the
+  modifier, so an ad surface cannot attach one and forget the other. No change
+  to when a render fires or how it is deduped.
+- **Fix: `EloAdListener.onAdDidTrackImpression` now fires only when the
+  impression ping actually lands.** It is documented as firing after the SDK
+  fires the ping, but it was dispatched alongside the attempt instead — so it
+  reported impressions the ad server rejected or never received, and publishers
+  counting impressions from it over-counted. Two things caused that, both
+  fixed: the callback did not wait for the ping, and the ping itself reported
+  success unconditionally. Render and impression pings now surface non-2xx
+  responses and transport failures, which also means
+  `EloDiagnosticsSnapshot.trackingTotals` can finally report a non-zero
+  `failed` count and the Diagnostics funnel shows real impression failures.
+  Matches iOS, which already gated its delegate callback on the delivery
+  outcome. `onAdDidReceiveClick` is unchanged — it is documented as firing on
+  the tap, before the click URL opens.
+- **Fix: a render or impression is no longer consumed when the SDK cannot send
+  it.** Each ad opportunity records at most one render and one impression for
+  the process lifetime. Calling the tracking hooks before `configure` (or after
+  `shutdown`) marked the opportunity as counted even though nothing was sent,
+  so the real ping could never follow. The SDK now checks that it can deliver
+  before spending that budget.
+- **New: `EloDiagnosticsSnapshot.trackingTotals` counts every render,
+  impression, and click attempt since configure.** The existing
+  `trackingEntries` list is a bounded ring buffer, so it could not tell you how
+  many impression pings failed once a session got past the newest twenty — and
+  a ping the SDK gives up on is a lost impression it will never retry. Each
+  `EloTrackingTotals` carries `attempted`, `delivered`, `failed`,
+  `unobservable`, and `inFlight`, is never evicted, and still records an
+  outcome whose entry had already aged out. The counts also appear in
+  `asExportableText()`. Cleared on configure and `shutdown()`, like the rest of
+  diagnostics. Matches the iOS change of the same behavior.
+- **Fix: an ad card no longer stays without its image when the same creative
+  comes back in a later ad.** The card drops its thumbnail when a creative's
+  image can't be loaded, so a broken URL leaves text rather than a blank
+  square. That was remembered against the creative rather than the ad, so
+  while the card stayed in composition, one failure also suppressed the image
+  on every later ad that served the same creative. It now applies only to the
+  ad it was recorded for. Matches the iOS fix of the same behavior.
+
+- **Breaking: `EloAd.id` is now the ad opportunity, and the creative moved to a
+  new `EloAd.creativeId`.** `id` previously carried the ad server's `ad_id` —
+  the *creative* — which is stable across opportunities, so the same creative
+  served twice produced two ads that looked identical to the SDK. The ad
+  opportunity, which is what render, impression, and click URLs are keyed under
+  server-side, was tucked away in an internal field. They have swapped places:
+  `id` is the opportunity (one per showing) and `creativeId` names the artwork.
+  Correlate delivery on `id`; group by `creativeId`.
+
+  If you log or store `ad.id`, it now changes on every serve of the same
+  creative. Switch to `ad.creativeId` wherever you meant the creative.
+
+  **Adapter authors:** the `EloAd` constructor now takes both `id` and
+  `creativeId`, and `id` must be unique per *fill*. Pass your network's
+  per-response id if it has one, or mint a `UUID.randomUUID().toString()`.
+  Passing a creative id there collapses every serve of that creative into a
+  single tracked ad, so only the first reports a render and an impression. The
+  AdMob adapter now mints one per fill, which fixes exactly that
+  under-reporting on AdMob native fills.
+
+
 ## 0.2.0 — 2026-08-09
 
 - **New: `Elo.setUserIdentifier` ties ad requests to your own user account.**
