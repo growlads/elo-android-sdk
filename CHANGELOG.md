@@ -2,6 +2,57 @@
 
 ## Unreleased
 
+## 0.5.0 — 2026-09-04
+
+- **New: server-selected CTA attention treatments for the keyboard strip.**
+  Elo-direct inline banners can render a decorative arrow after the label,
+  briefly pop the whole button, or shimmer the clipped CTA pill when the ad
+  response selects the treatment. Motion waits for one continuous second at
+  50% visibility and then repeats every few seconds while the CTA stays
+  viewable, resting at the static appearance in between; leaving view cancels
+  it, and the device's remove-animations setting keeps the static icon while
+  skipping motion. The arrow widens the button it is added to; the pop and the
+  shimmer are drawn, so they leave its bounds and touch target alone. Click and
+  accessibility behavior, compact cards, and adapter-rendered ads are
+  unchanged. Missing or unknown treatment values retain the existing control
+  CTA.
+
+- **Change: the keyboard strip's brand mark is a rounded square with no
+  border, not a ringed circle.** The mark keeps its 40dp size and disclosure
+  badge; its corner radius changes to 10dp and the hairline ring around it is
+  gone. Ad servers pick a favicon or an apple-touch-icon
+  for the creative image, and those are drawn for the app-icon silhouette, so
+  a circular crop was cutting the ends off the artwork. Measured across 90
+  days of served creatives, the disc removed 9.7% of the average mark and the
+  new radius removes 2.9%. Nothing in the layout moves.
+
+- **Breaking: `display_position` is now set by the SDK.** The
+  `displayPosition` parameter is removed from `Elo.loadAd`, `Elo.preloadAd`,
+  and `EloAdView(messages = ...)`, and the public `AdDisplayPosition` type is
+  gone. The SDK reports `display_position` from the layout it renders:
+  `card` for `EloAdLayout.CompactHorizontal` (the default `EloAdView` card)
+  and `banner` for `EloAdLayout.InlineBanner` (used by `EloKeyboardBannerAd`).
+  Requests made through `Elo.loadAd` directly carry no position.
+  `AdBidRequest.displayPosition` is no longer part of the adapter contract, and
+  a `preloadAd` is now served to a following load of the same messages
+  regardless of which surface renders it. Remove any `displayPosition`
+  arguments to compile against this version.
+
+- **New: tap analytics for Elo-served ads.** `EloAdView` and
+  `EloKeyboardBannerAd` now report every tap inside an Elo-served card or
+  strip to the Elo analytics endpoint (`sdk/events`, event type `ad_tap`):
+  the region under the finger (thumbnail, headline, description, CTA,
+  chevron, or chrome), the position as a fraction of the ad view's own size,
+  the view's size in dp, whether the tap opened the destination, the time
+  since the impression, and a per-showing tap index. Taps on the inert parts
+  of a strip with a CTA are reported as not opened, which is what makes the
+  missed-CTA rate and the tap heatmap measurable. Coordinates are never
+  screen-relative, at most fifty taps are reported per showing, and mediated
+  ads are excluded. Nothing about how taps behave changed. Diagnostics gain a
+  `TAP` tracking event, so `EloTrackingDiagnosticsEntry.Event` has a new
+  value.
+
+
 ## 0.4.1 — 2026-08-28
 
 - **Fix: retained ad views no longer report duplicate renders or impressions
