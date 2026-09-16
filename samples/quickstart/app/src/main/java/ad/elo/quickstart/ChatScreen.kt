@@ -50,14 +50,13 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import ad.elo.androidsdk.ChatMessage
-import ad.elo.androidsdk.EloAdLayout
 import ad.elo.androidsdk.MessageRole
 import ad.elo.androidsdk.ui.EloAdView
 import ad.elo.androidsdk.ui.EloKeyboardBannerAd
 
 /** Which ad format a chat demonstrates once you open it. */
 private enum class AdFormat(val title: String, val blurb: String) {
-    /** A banner strip rendered inline in the message feed (`EloAdLayout.InlineBanner`). */
+    /** A banner strip rendered inline in the message feed (`EloAdView` with a strip-height slot). */
     InlineBanner("Inline banner", "Renders in the message feed"),
 
     /** A banner pinned above the keyboard while the composer is focused (`EloKeyboardBannerAd`). */
@@ -74,9 +73,8 @@ private data class Chat(
 }
 
 // Two demo chats, each demonstrating one of the two banner formats. Each
-// `EloAdView` / `EloKeyboardBannerAd` loads its own contextual ad from Elo's
-// demand and renders the winning creative in the requested layout. (Register
-// mediation adapters in EloConfiguration.adapters to add more demand.)
+// `EloAdView` / `EloKeyboardBannerAd` loads its own contextual ad from Elo and
+// renders it in the format the server picks for the slot's size.
 private val demoChats = listOf(
     Chat(
         title = "Marathon training",
@@ -198,13 +196,13 @@ private fun ChatDetailScreen(chat: Chat, onBack: () -> Unit) {
                     MessageBubble(message.role, message.content)
                 }
 
-                // The inline-banner chat renders its ad in the feed. The
-                // keyboard-banner chat shows its ad via EloKeyboardBannerAd
-                // below instead.
+                // The inline-banner chat renders its ad in the feed. A slot
+                // shorter than 80dp gets the strip format. The keyboard-banner
+                // chat shows its ad via EloKeyboardBannerAd below instead.
                 if (chat.format == AdFormat.InlineBanner) {
                     EloAdView(
                         messages = chat.messages,
-                        layout = EloAdLayout.InlineBanner,
+                        maxHeight = 76.dp,
                         modifier = Modifier.fillMaxWidth(),
                     )
                 }
