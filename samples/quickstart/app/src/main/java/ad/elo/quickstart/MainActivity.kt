@@ -13,9 +13,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // Elo.configure is the SDK's entry point. This sample uses Elo's own
-        // demand only — no mediation adapters. To add a network, pass it in
-        // `adapters` (each adapter joins Elo's parallel first-price auction).
+        // Elo.configure is the SDK's entry point.
         //
         // Publisher / ad-unit IDs come from BuildConfig — populated by the
         // sample's build.gradle.kts from samples/quickstart/local.properties
