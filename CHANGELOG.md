@@ -2,6 +2,19 @@
 
 ## Unreleased
 
+## 0.6.2 — 2026-09-29
+
+- **New: some demand sources' tracking notices are now requested by the
+  device,** as the iOS SDK has done since 0.6.0. A few networks only count a
+  render, impression or click when the URL is fetched by the device that saw
+  the ad rather than by Elo's servers. Where a creative carries such notices,
+  the SDK now requests them itself, at the moment each one names, and at most
+  once per showing. They carry none of the SDK's headers or session data, only
+  the device's default HTTP agent, and their outcome does not affect Elo's own
+  tracking or any callback your app receives. Creatives without them, still
+  the majority, are unchanged. No public API changes.
+
+
 ## 0.6.1 — 2026-09-17
 
 - **In-chat card layout.** The card is now set like a feed ad: a header row
