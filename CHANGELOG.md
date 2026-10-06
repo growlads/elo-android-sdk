@@ -2,6 +2,55 @@
 
 ## Unreleased
 
+## 0.7.0 — 2026-10-06
+
+- **Opening an ad no longer fails silently.** Tapping an ad now opens its
+  link from any host context, including an application or service context
+  that cannot start an activity on its own, and logs when no app can open
+  the link. The `onAdDidReceiveClick` callback now runs after the open is
+  attempted, so a callback that throws can no longer stop the ad from
+  opening. No public API changes.
+- **A double tap opens an ad once.** A second tap within one second of
+  opening an ad no longer opens its link again, and `onAdDidReceiveClick`
+  runs once. No public API changes.
+- **A swipe across an ad no longer opens it.** A finger that moved across an
+  ad and lifted inside it opened the ad and counted as a click, however far
+  it moved. A touch that moves farther than the system's touch slop now opens
+  nothing. No public API changes.
+- **Open ads in your own in-app browser.** New
+  `EloAdListener.onAdOpenClickUrl(ad, url)`: open `url`, the ad's click URL,
+  yourself, for example in a Custom Tab, and return `true`. Return `false`,
+  the default, and the SDK opens it in the system browser as before; it does
+  the same when the callback throws. The README's in-app browser example opened the URL from
+  `onAdDidReceiveClick` while the SDK also opened it, so the ad opened twice.
+  If you followed it, move that code to `onAdOpenClickUrl` and return `true`.
+- **The first ad after app launch no longer times out on a slow start.** The
+  SDK now reads the advertising ID and the WebView user agent, and sets up
+  its network client, when you call `configure`, instead of during the first
+  ad request. An ad request no longer waits more than half a second for
+  either value; when one is not ready, the request is sent without it and
+  the next request includes it. Once read, the advertising ID is sent from
+  the last read without waiting and read again after each request. When
+  your app comes back to the foreground, the last value is dropped until a
+  new read lands, so a reset or opt-out made in system settings applies to
+  the first request after the user returns. No public API changes.
+- **The first ad request after `configure` no longer times out on connection
+  setup.** `configure` now sends one `HEAD` request to the ad server's health
+  endpoint, so the first ad request reuses an open connection. On an emulator
+  a new connection took 1.4 to 2.3 seconds of the 3 second deadline, and the
+  first ad after a cold start timed out. The request carries no chat content,
+  identifiers or consent data, and is not sent while the SDK is disabled. No
+  public API changes.
+- **Demand-source notices now carry the WebView user agent.** The tracking
+  notices the device requests for some demand sources now send the WebView
+  user agent that the ad request sent as `device.ua`, instead of the
+  platform's default HTTP agent (`Dalvik/…`), so the network sees the same
+  device on its tracking URL as in its bid request. Networks already receive
+  this agent in Elo's bid request, so no new data is shared. When the SDK
+  could not read the WebView agent, a notice keeps the platform's default
+  agent, as before. No public API changes.
+
+
 ## 0.6.2 — 2026-09-29
 
 - **New: some demand sources' tracking notices are now requested by the
