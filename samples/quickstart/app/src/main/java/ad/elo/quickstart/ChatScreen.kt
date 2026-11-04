@@ -52,15 +52,14 @@ import androidx.compose.ui.unit.dp
 import ad.elo.androidsdk.ChatMessage
 import ad.elo.androidsdk.MessageRole
 import ad.elo.androidsdk.ui.EloAdView
-import ad.elo.androidsdk.ui.EloKeyboardBannerAd
 
 /** Which ad format a chat demonstrates once you open it. */
 private enum class AdFormat(val title: String, val blurb: String) {
     /** A banner strip rendered inline in the message feed (`EloAdView` with a strip-height slot). */
     InlineBanner("Inline banner", "Renders in the message feed"),
 
-    /** A banner pinned above the keyboard while the composer is focused (`EloKeyboardBannerAd`). */
-    KeyboardBanner("Keyboard banner", "Pins above the keyboard — tap the composer"),
+    /** A banner directly above the composer that moves up with the keyboard (`EloAdView` with a strip-height slot). */
+    AboveKeyboard("Above the keyboard", "Sits above the composer — tap the composer"),
 }
 
 /** A demo conversation plus the ad format it shows. */
@@ -72,9 +71,9 @@ private data class Chat(
     val preview: String get() = messages.lastOrNull()?.content.orEmpty()
 }
 
-// Two demo chats, each demonstrating one of the two banner formats. Each
-// `EloAdView` / `EloKeyboardBannerAd` loads its own contextual ad from Elo and
-// renders it in the format the server picks for the slot's size.
+// Two demo chats, each demonstrating one of the two banner placements. Each
+// `EloAdView` loads its own contextual ad from Elo and renders it in the
+// format the server picks for the slot's size.
 private val demoChats = listOf(
     Chat(
         title = "Marathon training",
@@ -99,7 +98,7 @@ private val demoChats = listOf(
                     "it starts sputtering.",
             ),
         ),
-        format = AdFormat.KeyboardBanner,
+        format = AdFormat.AboveKeyboard,
     ),
 )
 
@@ -158,7 +157,7 @@ private fun ChatListScreen(chats: List<Chat>, onOpen: (Chat) -> Unit) {
 
 /**
  * A single conversation. Depending on the chat's format it renders either an
- * inline banner in the feed or a banner pinned above the keyboard.
+ * inline banner in the feed or a banner above the composer.
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -197,8 +196,8 @@ private fun ChatDetailScreen(chat: Chat, onBack: () -> Unit) {
                 }
 
                 // The inline-banner chat renders its ad in the feed. A slot
-                // shorter than 80dp gets the strip format. The keyboard-banner
-                // chat shows its ad via EloKeyboardBannerAd below instead.
+                // shorter than 120dp gets the strip format. The other chat
+                // shows its ad above the composer instead.
                 if (chat.format == AdFormat.InlineBanner) {
                     EloAdView(
                         messages = chat.messages,
@@ -208,13 +207,12 @@ private fun ChatDetailScreen(chat: Chat, onBack: () -> Unit) {
                 }
             }
 
-            // EloKeyboardBannerAd pins a banner strip above the software
-            // keyboard with one composable — it loads from the conversation,
-            // collapses on no-fill or error, and rests at the bottom of the
-            // screen while the composer is unfocused.
-            if (chat.format == AdFormat.KeyboardBanner) {
-                EloKeyboardBannerAd(
+            // Directly above the composer in this imePadding() column, the ad
+            // moves up with the keyboard. It takes no room on no-fill or error.
+            if (chat.format == AdFormat.AboveKeyboard) {
+                EloAdView(
                     messages = chat.messages,
+                    maxHeight = 76.dp,
                     modifier = Modifier.fillMaxWidth(),
                 )
             }
