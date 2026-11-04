@@ -2,6 +2,41 @@
 
 ## Unreleased
 
+## 0.8.0 — 2026-11-04
+
+- **The ad's format is public.** `EloAd.format` is an `EloAdFormat` (`Strip`,
+  `Compact`, `Card` or `Full`; `wireName` is the server's name). An app with
+  more than one slot reads it to pick the placement, with an `else` branch
+  for formats added later.
+- **Set the full card's height.** Every `EloAdView` overload takes
+  `fullCardHeight`, default `EloAdViewDefaults.FullCardHeight` (272dp). The
+  full card no longer sizes itself from the request's `maxHeight`: it is
+  272dp tall unless told otherwise, and its image takes what the copy and the
+  button leave. Other formats ignore the parameter.
+- **Compact and full ad formats.** The server now also sends a compact card
+  (at least 120dp: image beside the title, a one-line description led by the
+  brand name, full-width CTA button) and a full card (at least 272dp:
+  full-width image, centered brand name, title and description, full-width CTA
+  button, close button). `EloAdView` renders whichever format arrives; a slot
+  with a `maxHeight` gets the tallest format that fits. Compact and full take
+  the strip's and the card's publisher settings respectively.
+- **`onDismiss`.** Every `EloAdView` overload takes an `onDismiss` callback,
+  run after the user closes the full card. The view hides the ad itself;
+  nothing is sent to Elo.
+- **Brand name and logo.** `EloAd` carries the demand source's brand name and
+  logo when sent. The compact and full cards lead the headline with the brand
+  name and badge the logo on the image; the strip and the card show the logo
+  where there is no image.
+- **Breaking: `EloKeyboardBannerAd` is removed.** Place an `EloAdView` with
+  your slot's `maxHeight` above your composer instead; see "Ads above the
+  keyboard" in the README. The example app shows the strip, compact and full
+  placements.
+- **Breaking: no loading placeholder.** `EloAdLoadingView`,
+  `showLoadingPlaceholder` and `loadingAccessibilityLabel` are removed. The
+  server picks the format, so the slot takes no room until an ad arrives;
+  reserve the space in your own layout when it must not move.
+
+
 ## 0.7.0 — 2026-10-06
 
 - **Opening an ad no longer fails silently.** Tapping an ad now opens its

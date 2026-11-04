@@ -1,6 +1,6 @@
 # Elo Android SDK
 
-> Maven coordinates: `ad.elo:elo-ads-android:0.7.0` — see [Installation](#installation).
+> Maven coordinates: `ad.elo:elo-ads-android:0.8.0` — see [Installation](#installation).
 
 Contextual ads for Android chat apps. Distributed via Maven Central.
 
@@ -20,7 +20,7 @@ Add to your app module's `build.gradle.kts`:
 
 ```kotlin
 dependencies {
-    implementation("ad.elo:elo-ads-android:0.7.0")
+    implementation("ad.elo:elo-ads-android:0.8.0")
 }
 ```
 
@@ -127,7 +127,7 @@ The first-party AdMob adapter is published as a separate artifact:
 
 ```kotlin
 dependencies {
-    implementation("ad.elo:elo-ads-android:0.7.0")
+    implementation("ad.elo:elo-ads-android:0.8.0")
     implementation("ad.elo:elo-android-mediation-admob:0.1.3")
 }
 ```
@@ -211,7 +211,7 @@ The AdMob adapter ships from the same SDK release pipeline. To request additiona
 
 ## Sample
 
-A runnable Compose sample lives in [`samples/quickstart/`](./samples/quickstart). It's a small chat app: a list of chats that each open into a conversation demonstrating one of the SDK's two banner formats — the inline banner (`EloAdView` in the feed) and the keyboard banner (`EloKeyboardBannerAd`). It uses Elo's own demand only; to demo mediation, register an adapter as shown in [Mediation](#mediation-optional). Build it with:
+A runnable Compose sample lives in [`samples/quickstart/`](./samples/quickstart). It's a small chat app: a list of chats that each open into a conversation demonstrating one of two banner placements: in the feed, and directly above the composer, where it moves up with the keyboard. Both use `EloAdView`. It uses Elo's own demand only; to demo mediation, register an adapter as shown in [Mediation](#mediation-optional). Build it with:
 
 ```sh
 cd samples/quickstart
